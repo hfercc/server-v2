@@ -13,6 +13,7 @@ from backtest_py2.settings import MEDIA_ROOT, BASE_DIR, PROJECT_ROOT
 import shutil
 import subprocess
 from .xmlparse import get, generate
+import json
 
 from glob import glob
 libs_dir = os.path.join(default_storage.path(MEDIA_ROOT),'libs')
@@ -87,9 +88,12 @@ def compile_alpha(report):
     else:
         return False
     '''
-    new_env = os.environ.copy()
+    with open(os.path.join(base_dir, 'env')) as f:
+        env = f.read()
+        env = eval(env)
     prepare(report)
     os.chdir(os.path.join(base_dir, 'pysimulator'))
+    pipe = subprocess.Popen('./compile.sh {}'.format(report.alpha_name + '.py') , shell=True, env=new_env)
     pipe = subprocess.Popen('./compile.sh {}'.format(report.alpha_name + '.py') , shell=True, env=new_env)
     pipe.communicate()
     with open('config_compile.xml', 'w') as f:
@@ -97,7 +101,7 @@ def compile_alpha(report):
         x = generate(x)
         print(x)
         f.write(x)
-    pipe = subprocess.Popen('python run.py -c config_compile.xml' , shell=True, env=new_env)
+    pipe = subprocess.Popen('python run.py -c config_compile.xml' , shell=True, env=env)
     pipe.communicate()
     if os.path.exists('output'):
         if os.path.exists(os.path.join(get_dir(get_path(report)), 'output')):
