@@ -8,12 +8,14 @@ import os
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files import File as FileWrapper
+from django.db.models import Q
 import zipfile
 from backtest_py2.settings import MEDIA_ROOT, BASE_DIR, PROJECT_ROOT
 import shutil
 import subprocess
 from .xmlparse import get, generate
 import json
+from file.models import FileRecord
 
 from glob import glob
 libs_dir = os.path.join(default_storage.path(MEDIA_ROOT),'libs')
@@ -106,6 +108,11 @@ def compile_alpha(report):
         if os.path.exists(os.path.join(get_dir(get_path(report)), 'output')):
             shutil.rmtree(os.path.join(get_dir(get_path(report)), 'output'))
         shutil.copytree('output', os.path.join(get_dir(get_path(report)), 'output'))
+        fileset =  FileRecord.objects.filter(Q(author=report.author) & Q(report=report))
+        if (len(fileset) == 0):
+            FileRecord.objects.create(path=os.path.join(get_dir(get_path(report)), 'output','output_pnl.png'), author=report.author, report=report)
+            FileRecord.objects.create(path=os.path.join(get_dir(get_path(report)), 'output','output_ret.csv'), author=report.author, report=report)
+            FileRecord.objects.create(path=os.path.join(get_dir(get_path(report)), 'output','output_performance.csv'), author=report.author, report=report)
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
         shutil.rmtree('build')
         os.remove('alpha/{}.so'.format(report.alpha_name))

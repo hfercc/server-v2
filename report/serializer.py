@@ -12,7 +12,8 @@ class ReportsSerializer(serializers.ModelSerializer):
 class ReportsCreateSerializer(serializers.ModelSerializer):
     alpha_name = serializers.CharField(required=True, allow_blank=False)
     add_time = serializers.DateTimeField(read_only=True, format='%Y-%m-%d %H:%M')
-
+    error_message = serializers.ReadOnlyField()
+    backtest_img = serializers.ReadOnlyField()
     def validate(self, data):
         alpha_name = data['alpha_name']
         user = self.context['request'].user

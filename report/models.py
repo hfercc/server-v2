@@ -13,4 +13,3 @@ class Report(models.Model):
     add_time = models.DateTimeField(default=datetime.now)
     error_message = models.CharField(max_length=100, blank=True, default="")
     #modified_time = models.DateTimeField(u"修改时间", default=datetime.now)
-    backtest_img = models.CharField(max_length=100, blank=True, default="")

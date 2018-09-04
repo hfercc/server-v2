@@ -30,7 +30,8 @@ router.register(r'users', UserViewset, base_name="users")
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
     url(r'media/<path:path>', serve, {'document_root':MEDIA_ROOT}),
-    url(r'^files/(?P<report_id>\d+)/$', download_key, name='download-file'),
+    url(r'image/<path:path>', serve, {'document_root':MEDIA_ROOT}),
+    url(r'^files/(?P<report>.*)/$', download_key, name='download-file'),
     url(r'login/', UserLogin.as_view(), name='login'),
     url(r'users/change_password/', change_password, name='change-password'),
     url(r'upload/', upload_report, name='upload-report'),

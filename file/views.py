@@ -18,9 +18,10 @@ from .serializer import FileSerializer
 # Create your views here.
 @decorators.api_view(['GET'])
 @decorators.permission_classes([permissions.IsAuthenticated])
-def download_key(request, report_id):
+def download_key(request, report):
     user = request.user
-    files = FileRecord.objects.filter(Q(author=user) | Q(report__report_id=report_id))
+    files = FileRecord.objects.filter(Q(author=user) | Q(report__alpha_name=report))
+    print(files)
     ret = FileResponse(open(files[0].path, 'rb'))
     filename = files[0].path.split('/')[-1]
     ret['Content-Type']='application/octet-stream' 
