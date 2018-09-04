@@ -112,7 +112,7 @@ def compile_alpha(report):
         if (len(fileset) == 0):
             FileRecord.objects.create(path=os.path.join(get_dir(get_path(report)), 'output','output_pnl.png'), author=report.author, report=report, name='output_pnl.png')
             FileRecord.objects.create(path=os.path.join(get_dir(get_path(report)), 'output','output_ret.csv'), author=report.author, report=report, name='output_ret.csv')
-            FileRecord.objects.create(path=os.path.join(get_dir(get_path(report)), 'output','output_performance.csv'), author=report.author, report=report,'output_performance.csv')
+            FileRecord.objects.create(path=os.path.join(get_dir(get_path(report)), 'output','output_performance.csv'), author=report.author, report=report,name='output_performance.csv')
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
         shutil.rmtree('build')
         os.remove('alpha/{}.so'.format(report.alpha_name))
