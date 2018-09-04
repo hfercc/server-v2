@@ -97,7 +97,7 @@ def compile_alpha(report):
         x = generate(x)
         print(x)
         f.write(x)
-    pipe = subprocess.Popen('python2 -v run.py -c config_compile.xml' , shell=True, env=new_env)
+    pipe = subprocess.Popen('python run.py -c config_compile.xml' , shell=True, env=new_env)
     pipe.communicate()
     if os.path.exists('output'):
         if os.path.exists(os.path.join(get_dir(get_path(report)), 'output')):
