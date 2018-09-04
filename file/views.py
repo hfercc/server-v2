@@ -26,8 +26,7 @@ def download_key(request, report, file_name):
         if len(files) > 0:
             ret = FileResponse(open(files[0].path, 'rb'))
             filename = files[0].path.split('/')[-1]
-            ret['Content-Type']='application/octet-stream' 
-            ret['Content-Disposition'] = 'attachment; filename="%s"' % filename
+            ret['Content-Type']='application/octet-stream' if file_name != 'output_pnl.png' else 'image/jpeg'
             return ret
         else:
             raise Http404("File Not Found")
