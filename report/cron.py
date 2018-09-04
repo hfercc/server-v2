@@ -1,5 +1,5 @@
 from .models import Report
-from backtest.settings import MEDIA_ROOT
+from backtest_py2.settings import MEDIA_ROOT
 from django.core.files.storage import default_storage
 from utils import utils
 import os
