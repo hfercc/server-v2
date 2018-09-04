@@ -8,3 +8,4 @@ class FileRecord(models.Model):
     file_id = models.AutoField(primary_key=True)
     path = models.CharField(max_length=100)
     report = models.ForeignKey(Report,on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
