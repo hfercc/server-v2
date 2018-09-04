@@ -20,6 +20,7 @@ from .serializer import FileSerializer
 @decorators.api_view(['GET'])
 @decorators.permission_classes([permissions.IsAuthenticated])
 def download_key(request, report, file_name):
+    print(report, file_name)
     user = request.user  
     if file_name:
         files = FileRecord.objects.filter(Q(author=user) & Q(report__alpha_name=report) & Q(name=file_name))
