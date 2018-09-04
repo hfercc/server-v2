@@ -3,5 +3,5 @@ from .models import FileRecord
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileRecord
-        fields = '__all__'
+        fields = ('name',)
 
