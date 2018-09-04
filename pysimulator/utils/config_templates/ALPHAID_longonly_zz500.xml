@@ -1,0 +1,20 @@
+<Config>
+  <SimulationSetting startdate="20090101" enddate="20180501" backdays="20" enable_performance="true" timeit="true"/>
+  <Date id="dates" path="./lib/dates_loader.so" datapath="/opt/data/research_cache/WindData"/>
+  <Ticker id= "tickers" path="./lib/tickers_loader.so" datapath="/opt/data/research_cache/WindData"/>
+  <Universe id="universe" type="ALL" path="./lib/redis_universe_loader.so" datapath="/opt/data/research_cache/WindData"/>
+  <DataLoader id="tradable" path="./lib/redis_tradable_loader.so" datapath="/opt/data/research_cache/WindData"/>
+  <DataLoader id="essentials" path="./lib/redis_data_loader.so"  datapath="/opt/data/research_cache/WindData"/>
+  <DataLoader id="IndexLoader" path="./lib/index_data_loader.so" datapath="/opt/data/research_cache/WindData" index="IC,IF"/>
+  <DataLoader id="GICS" GICS="GICS_II" path="./lib/GICS_loader.so" datapath="/opt/data/research_cache/WindData"/>
+  <!--put your alpha here -->
+  <!--BEGIN -->
+  <Alpha id="GTJA001" path="./lib/alpha_formulaic.so" formula="-1*CORR(RANK(DELTA(LOG(VOLUME),1)),RANK(((CLOSE-OPEN)/OPEN)),6)" />
+  <!--END -->
+  <!--<Operation id="Normalize" path="./lib/alphaop_normalize.so" min_limit="0"/>-->
+  <!--<Operation id="Decay" path="./lib/alphaop_decay.so" prev_n="10"/>-->
+  <!--<Operation id="Print" path="./lib/alphaop_print.so"/>-->
+  <!--<Operation id="Select" path="alphaop_select.so" number="1000"/>-->
+  <Operation id="Truncate" path="alphaop_truncate.so" lower_limit="0"/>
+  <Performance id="Performance" path="./lib/dummy_performance.so" capital="100000000"/>
+</Config>

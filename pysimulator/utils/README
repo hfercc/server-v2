@@ -1,0 +1,6 @@
+THIS README CONTAINS USAGES OF SCRIPTS IN UTILS
+
+1. Usage of generate_alpha_formulaic_config.py
+   1) How to run:
+   cd to directory PySimulator-Research and then run the script as follows:	
+   python utils/ generate_alpha_formulaic_config.py --alpha_id DummyAlpha --formula "delta(close,1)" --output_dir my_config_dir
