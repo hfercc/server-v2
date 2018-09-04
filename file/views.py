@@ -20,11 +20,10 @@ from .serializer import FileSerializer
 @decorators.api_view(['GET'])
 @decorators.permission_classes([permissions.IsAuthenticated])
 def download_key(request, report, file_name):
-    print(report, file_name)
     user = request.user  
     if file_name:
         files = FileRecord.objects.filter(Q(author=user) & Q(report__alpha_name=report) & Q(name=file_name))
-        if len(files > 0):
+        if len(files) > 0:
             ret = FileResponse(open(files[0].path, 'rb'))
             filename = files[0].path.split('/')[-1]
             ret['Content-Type']='application/octet-stream' 
@@ -33,5 +32,5 @@ def download_key(request, report, file_name):
         else:
             raise Http404("File Not Found")
     else:
-        serializer = FileSerializer(FileRecord.objects.filter(Q(author=user) & Q(report__alpha_name=report)))
+        serializer = FileSerializer(FileRecord.objects.filter(Q(author=user) & Q(report__alpha_name=report)), many=True)
         return Response(serializer.data)
