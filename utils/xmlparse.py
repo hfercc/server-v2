@@ -4,7 +4,7 @@ def get(file):
     domobj = xmldom.parse(file)
     elementobj = domobj.documentElement
     r = list(elementobj.getElementsByTagName("Alpha"))
-    print(r)
+    print(r[0].toxml())
     r.extend(list(elementobj.getElementsByTagName("Operation")))
     return r
 
