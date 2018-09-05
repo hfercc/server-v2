@@ -39,7 +39,7 @@ def download_key(request, report, file_name):
                 columns = regex.split(r[0][0].strip())
                 columns[0] = 'period'
                 for i in range(1, len(r)):
-                    ret.append(zip(columns, regex.split(r[i][0].strip())))
+                    ret.append(dict(zip(columns, regex.split(r[i][0].strip()))))
                 return HttpResponse(ret)
 
             else:
