@@ -26,7 +26,7 @@ class ReportsCreateSerializer(serializers.ModelSerializer):
         model = Report
         fields = '__all__'
 
-class ReportsCreateSerializer(serializers.ModelSerializer):
+class ReportsReuploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ('file',)
