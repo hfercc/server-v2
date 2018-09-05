@@ -56,7 +56,9 @@ def unzip(report):
         path_to = get_dir(full_path)
         for file in f.namelist():
             if file in ['config.xml','report.pdf', report.alpha_name + '.py']:
+                print(os.path.join(path_to, file))
                 if os.path.exists(os.path.join(path_to, file)):
+                    print('exist')
                     os.remove(os.path.join(path_to, file))
                 f.extract(file, path_to)
         f.close()
