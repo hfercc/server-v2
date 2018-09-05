@@ -34,6 +34,7 @@ def download_key(request, report, file_name):
                 ret = []
                 with open(files[0].path) as f:
                     r = list(csv.reader(f))[0]
+                print(r)
                 regex = re.compile('\s+')
                 columns = regex.split(r[0].strip())
                 columns[0] = 'period'
