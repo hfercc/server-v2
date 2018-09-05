@@ -42,7 +42,9 @@ def store_file(fd, user, alpha_name):
     MEDIA_ROOT.
     """
     full_path = default_storage.path(os.path.join(user.username, alpha_name, os.path.basename(fd.name)))
+    print(full_path)
     if (os.path.exists(full_path)):
+        print('overwrite')
         os.remove(full_path)
     name = default_storage.save(os.path.join(user.username, alpha_name, os.path.basename(fd.name)), fd)
 
@@ -50,12 +52,15 @@ def store_file(fd, user, alpha_name):
 
 def unzip(report):
     full_path = get_path(report)
+    print(full_path)
     try:
         f = zipfile.ZipFile(full_path, 'r')
         path_to = get_dir(full_path)
         for file in f.namelist():
             if file in ['config.xml','report.pdf', report.alpha_name + '.py']:
+                print(os.path.join(path_to, file))
                 if os.path.exists(os.path.join(path_to, file)):
+                    print('exist')
                     os.remove(os.path.join(path_to, file))
                 f.extract(file, path_to)
         f.close()
