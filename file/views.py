@@ -33,7 +33,8 @@ def download_key(request, report, file_name):
             elif file_name == 'output_performance.csv':
                 ret = []
                 with open(files[0].path) as f:
-                    r = list(csv.reader(f))[0]
+                    r = list(csv.reader(f))
+                r = r[0]
                 print(r)
                 regex = re.compile('\s+')
                 columns = regex.split(r[0].strip())
