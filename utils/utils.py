@@ -42,7 +42,9 @@ def store_file(fd, user, alpha_name):
     MEDIA_ROOT.
     """
     full_path = default_storage.path(os.path.join(user.username, alpha_name, os.path.basename(fd.name)))
+    print(full_path)
     if (os.path.exists(full_path)):
+        print('overwrite')
         os.remove(full_path)
     name = default_storage.save(os.path.join(user.username, alpha_name, os.path.basename(fd.name)), fd)
 
