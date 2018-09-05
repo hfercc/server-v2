@@ -1,4 +1,4 @@
-from .serializer import ReportsSerializer, ReportsCreateSerializer
+from .serializer import ReportsSerializer, ReportsCreateSerializer, ReportsReuploadSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -51,7 +51,9 @@ class ReportsViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.Retr
     filter_class = ReportsFilter
     search_fields = ('alpha_name',)
     def get_serializer_class(self):
-        if self.action == "create" or self.action == "update" or self.action == 'partial_update':
+        if  self.action == "update" or self.action == 'partial_update':
+            return ReportsReuploadSerializer
+        elif self.action == "create":
             return ReportsCreateSerializer
         else:
             return ReportsSerializer
@@ -59,7 +61,7 @@ class ReportsViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.Retr
         serializer.save(author=self.request.user)
 
     def perform_update(self, serializer):
-        serializer.save()
+        serializer.save(status=0)
         
     def get_queryset(self):
         queryset = Report.objects.filter(author=self.request.user)
