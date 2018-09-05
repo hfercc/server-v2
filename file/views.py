@@ -11,6 +11,7 @@ from rest_framework import generics, permissions
 from rest_framework import decorators
 from django.db.models import Q
 from rest_framework.response import Response
+from django.utils import simplejson
 
 from .models import FileRecord
 
@@ -40,7 +41,7 @@ def download_key(request, report, file_name):
                 columns[0] = 'period'
                 for i in range(1, len(r)):
                     ret.append(dict(zip(columns, regex.split(r[i][0].strip()))))
-                return HttpResponse(ret)
+                return HttpResponse(simplejson.dumps(ret))
 
             else:
                 ret = FileResponse(open(files[0].path, 'rb'))
