@@ -41,7 +41,7 @@ def download_key(request, report, file_name):
                 columns[0] = 'period'
                 for i in range(1, len(r)):
                     ret.append(dict(zip(columns, regex.split(r[i][0].strip()))))
-                return HttpResponse({'ret':ret}, content_type="application/json")
+                return HttpResponse(json.dumps({'ret':ret}), content_type="application/json")
 
             else:
                 ret = FileResponse(open(files[0].path, 'rb'))
