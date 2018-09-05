@@ -34,13 +34,12 @@ def download_key(request, report, file_name):
                 ret = []
                 with open(files[0].path) as f:
                     r = list(csv.reader(f))
-                r = r[0]
                 print(r)
                 regex = re.compile('\s+')
-                columns = regex.split(r[0].strip())
+                columns = regex.split(r[0][0].strip())
                 columns[0] = 'period'
                 for i in range(1, len(r)):
-                    ret.append(zip(columns, regex.split(r[i].strip())))
+                    ret.append(zip(columns, regex.split(r[i][0].strip())))
                 return HttpResponse(ret)
 
             else:
