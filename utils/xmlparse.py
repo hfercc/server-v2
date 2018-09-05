@@ -5,7 +5,6 @@ def get(file):
     elementobj = domobj.documentElement
     r = list(elementobj.getElementsByTagName("Alpha"))
     print(r[0].toxml())
-    r.extend(list(elementobj.getElementsByTagName("Operation")))
     return r
 
 def generate(t):
