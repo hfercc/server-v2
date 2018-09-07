@@ -194,3 +194,31 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': "%(asctime)s %(levelname)s %(message)s",
+            'datefmt': "%a, %d %b %Y %H:%M:%S"
+        },
+    },
+    'handlers': {
+        'django_crontab': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'django_crontab.log',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django_crontab.crontab': {
+            'handlers': ['django_crontab'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+ 
+    }
+}
