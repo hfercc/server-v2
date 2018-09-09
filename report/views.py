@@ -50,6 +50,8 @@ class ReportsViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.Retr
     filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
     filter_class = ReportsFilter
     search_fields = ('alpha_name',)
+    ordering_fields = ('report_id', 'alpha_name', 'add_time', 'status')
+    ordering = ('-add_time', )
     def get_serializer_class(self):
         if  self.action == "update" or self.action == 'partial_update':
             return ReportsReuploadSerializer
