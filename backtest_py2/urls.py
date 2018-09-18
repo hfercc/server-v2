@@ -24,16 +24,16 @@ from file.views import download_key
 import xadmin
 
 router = DefaultRouter()
-router.register(r'report', ReportsViewSet, base_name="reports")
-router.register(r'users', UserViewset, base_name="users")
+router.register(r'api/report', ReportsViewSet, base_name="reports")
+router.register(r'api/users', UserViewset, base_name="users")
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
-    url(r'media/<path:path>', serve, {'document_root':MEDIA_ROOT}),
-    url(r'image/<path:path>', serve, {'document_root':MEDIA_ROOT}),
-    url(r'^files/(?P<report>.*)/(?P<file_name>.*)?/?$', download_key, name='download-file'),
-    url(r'login/', UserLogin.as_view(), name='login'),
-    url(r'users/change_password/', change_password, name='change-password'),
-    url(r'upload/', upload_report, name='upload-report'),
+    url(r'api/media/<path:path>', serve, {'document_root':MEDIA_ROOT}),
+    url(r'api/image/<path:path>', serve, {'document_root':MEDIA_ROOT}),
+    url(r'^api/files/(?P<report>.*)/(?P<file_name>.*)?/?$', download_key, name='download-file'),
+    url(r'api/login/', UserLogin.as_view(), name='login'),
+    url(r'api/users/change_password/', change_password, name='change-password'),
+    url(r'api/upload/', upload_report, name='upload-report'),
     url(r'', include(router.urls))
 ]
