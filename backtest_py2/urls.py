@@ -28,7 +28,7 @@ router.register(r'api/report', ReportsViewSet, base_name="reports")
 router.register(r'api/users', UserViewset, base_name="users")
 
 urlpatterns = [
-    url(r'^xadmin/', xadmin.site.urls),
+    url(r'^api/xadmin/', xadmin.site.urls),
     url(r'api/media/<path:path>', serve, {'document_root':MEDIA_ROOT}),
     url(r'api/image/<path:path>', serve, {'document_root':MEDIA_ROOT}),
     url(r'^api/files/(?P<report>.*)/(?P<file_name>.*)?/?$', download_key, name='download-file'),
