@@ -72,6 +72,8 @@ class UserViewset(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, BaseUs
     queryset = User.objects.all()
     lookup_value_regex = re_user_lookup_value
     lookup_url_kwarg = 'user_pk'
+    permission_classes = [
+        permissions.C(permissions.IsAuthenticatedOrReadOnly) & permissions.check_owner()]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -87,7 +89,7 @@ class UserViewset(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, BaseUs
         return Response(re_dict, status=status.HTTP_201_CREATED, headers=headers)
     def get_permissions(self):
         if self.action == "retrieve":
-            return [permissions.IsAuthenticated()]
+            return [permissions.IsAuthenticatedOrReadOnly()]
         elif self.action == "create":
             return []
         return []
@@ -100,5 +102,5 @@ class UserViewset(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, BaseUs
         return UserDetailSerializer
     def get_object(self):
         obj = self.get_user_object()
-        #self.check_object_permissions(self.request, obj)
+        self.check_object_permissions(self.request, obj)
         return obj

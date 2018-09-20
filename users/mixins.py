@@ -10,14 +10,16 @@ re_user_lookup_value = r'\d+|me'
 class BaseUserViewSetMixin(viewsets.GenericViewSet):
     user_lookup_value_regex = re_user_lookup_value
     def get_user_queryset(self):
-        return User.objects.all()
+        if self.request.user.is_authenticated():
+            userset = User.objects.all()
+        return userset
     def get_user_object(self):
         lookup = self.kwargs['user_pk']
-        if self.request.user.is_authenticated:
-            if lookup == 'me':
+        if lookup == 'me':
+            if not self.request.user.is_authenticated:
+                raise NotFound
+            if self.action != 'retrieve':
                 return self.request.user
-            else:
-                lookup = str(self.request.user.id)
-                return get_object_or_404(self.get_user_queryset(), pk=lookup)
-        else:
-            raise NotFound
+            lookup = str(self.request.user.id)
+
+        return get_object_or_404(self.get_user_queryset(), pk=lookup)
