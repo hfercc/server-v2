@@ -87,6 +87,7 @@ class UserViewset(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, BaseUs
         return Response(re_dict, status=status.HTTP_201_CREATED, headers=headers)
     def get_permissions(self):
         if self.action == "retrieve":
+            console.log(permissions.IsAuthenticated())
             return [permissions.IsAuthenticated()]
         elif self.action == "create":
             return []
