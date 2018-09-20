@@ -87,7 +87,6 @@ class UserViewset(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, BaseUs
         return Response(re_dict, status=status.HTTP_201_CREATED, headers=headers)
     def get_permissions(self):
         if self.action == "retrieve":
-            print(dir(permissions.IsAuthenticated()))
             return [permissions.IsAuthenticated()]
         elif self.action == "create":
             return []
@@ -101,5 +100,5 @@ class UserViewset(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, BaseUs
         return UserDetailSerializer
     def get_object(self):
         obj = self.get_user_object()
-        self.check_object_permissions(self.request, obj)
+        #self.check_object_permissions(self.request, obj)
         return obj

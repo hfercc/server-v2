@@ -13,11 +13,11 @@ class BaseUserViewSetMixin(viewsets.GenericViewSet):
         return User.objects.all()
     def get_user_object(self):
         lookup = self.kwargs['user_pk']
-        if lookup == 'me':
-            if not self.request.user.is_authenticated:
-                raise NotFound
-            if self.action != 'retrieve':
+        if self.request.user.is_authenticated:
+            if lookup == 'me':
                 return self.request.user
-            lookup = str(self.request.user.id)
-
-        return get_object_or_404(self.get_user_queryset(), pk=lookup)
+            else:
+                lookup = str(self.request.user.id)
+                return get_object_or_404(self.get_user_queryset(), pk=lookup)
+        else:
+            raise NotFound
