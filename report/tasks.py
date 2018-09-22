@@ -9,7 +9,8 @@ import os
 import fcntl
 
 @task
-def Query(report):
+def Query(id):
+    report = Report.objects.get(report_id=id)
     print('jobs {} running....' % report.report_id)
     report.status = 1
     report.save()

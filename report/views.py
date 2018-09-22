@@ -65,7 +65,7 @@ class ReportsViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.Retr
         Query.delay(report)
     def perform_update(self, serializer):
         report = serializer.save(status=0)
-        Query.delay(report) 
+        Query.delay(report.report_id) 
     def get_queryset(self):
         queryset = Report.objects.filter(author=self.request.user)
         return queryset
