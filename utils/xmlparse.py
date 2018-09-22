@@ -18,7 +18,7 @@ def generate(t):
     <DataLoader id="IndexLoader" path="./lib/index_data_loader.so" datapath="/opt/data/research_cache/WindData" index="IC,IF"/> \
     <DataLoader id="GICS" GICS="GICS_II" path="./lib/GICS_loader.so" datapath="/opt/data/research_cache/WindData" />'
 
-    p2 = '<Performance id="Performance" path="./lib/dummy_performance.so" output_name="output" capital="1000000" save_dir="./output" hedge_inex="IC" plot="false"/> \
+    p2 = '<Performance id="Performance" path="./lib/dummy_performance.so" output_name="output" capital="1000000" save_dir="./output" hedge_index="IC" plot="false"/> \
 </Config>'
     p3 = ' '.join([p.toxml() for p in t])
     return p1 + p3 + p2

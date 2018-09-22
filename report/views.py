@@ -21,7 +21,7 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.authentication import SessionAuthentication
 # Create your views here.
 
-from .tasks import run_test_suit
+from .tasks import Query
 
 @decorators.api_view(['POST'])
 @decorators.permission_classes([permissions.IsAuthenticated])
@@ -62,10 +62,10 @@ class ReportsViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.Retr
             return ReportsSerializer
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-        result = run_test_suit.delay('5')
+        Query.delay('5')
     def perform_update(self, serializer):
         serializer.save(status=0)
-        
+        Query.delay('5') 
     def get_queryset(self):
         queryset = Report.objects.filter(author=self.request.user)
         return queryset

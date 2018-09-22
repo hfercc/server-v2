@@ -42,9 +42,7 @@ def store_file(fd, user, alpha_name):
     MEDIA_ROOT.
     """
     full_path = default_storage.path(os.path.join(user.username, alpha_name, os.path.basename(fd.name)))
-    print(full_path)
     if (os.path.exists(full_path)):
-        print('overwrite')
         os.remove(full_path)
     name = default_storage.save(os.path.join(user.username, alpha_name, os.path.basename(fd.name)), fd)
 
@@ -60,7 +58,6 @@ def unzip(report):
             if file in ['config.xml','report.pdf', report.alpha_name + '.py']:
                 print(os.path.join(path_to, file))
                 if os.path.exists(os.path.join(path_to, file)):
-                    print('exist')
                     os.remove(os.path.join(path_to, file))
                 f.extract(file, path_to)
         f.close()
@@ -96,9 +93,9 @@ def compile_alpha(report):
     else:
         return False
     '''
-    with open(os.path.join(base_dir, 'env')) as f:
-        env = f.read()
-        env = eval(env)
+    env=os.environ.copy()
+    print(env)
+    env['PYTHONPATH']='/home/alpha-service/PySimulator-Research-1.0.0/lib:/home/alpha-service/PySimulator-Research-1.0.0/alpha' 
     prepare(report)
     os.chdir(os.path.join(base_dir, 'pysimulator'))
     pipe = subprocess.Popen('./compile.sh {}'.format(report.alpha_name + '.py') , shell=True, env=env)
