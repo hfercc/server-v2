@@ -41,9 +41,12 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': timedelta(days=7),    
     'JWT_AUTH_HEADER_PREFIX': 'JWT',       
 }
-CRONJOBS = [
-    ('*/1 * * * *', 'report.cron.Query', ">>" + os.path.join(BASE_DIR, 'media', "cron_file"))
-]
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Shanghai'
 # Application definition
 
 INSTALLED_APPS = [
@@ -62,7 +65,6 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'utils',
-    'django_crontab',
     'file',
     'xadmin'
 ]
@@ -105,10 +107,10 @@ WSGI_APPLICATION = 'backtest_py2.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mengxi_test',
-        'USER': 'test',
-        'PASSWORD': 'test1234',
-        'HOST': 'localhost'
+        'NAME': 'alpha_submission',
+        'USER': 'alpha-service',
+        'PASSWORD': 'MXalpha@2018',
+        'HOST': '192.168.0.166'
     }
 }
 
