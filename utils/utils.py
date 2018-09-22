@@ -20,13 +20,13 @@ from file.models import FileRecord
 from glob import glob
 libs_dir = os.path.join(default_storage.path(MEDIA_ROOT),'libs')
 base_dir = '/'.join(PROJECT_ROOT.split('/')[:-1])
-def get_path(file):
+def get_path(report):
     base_dir = '/'.join(PROJECT_ROOT.split('/')[:-1])
-    return os.path.join(base_dir, file[1:])
-def prepare(file, alpha_name):
-    full_path = get_path(file)
-    shutil.copy(get_dir(get_path(file), file_name = alpha_name + '.py'), os.path.join(base_dir, 'pysimulator'))
-    shutil.copy(get_dir(get_path(file), file_name = 'config.xml'), os.path.join(base_dir, 'pysimulator'))
+    return os.path.join(base_dir, report.file[1:])
+def prepare(report):
+    full_path = get_path(report.file)
+    shutil.copy(get_dir(get_path(report.file), file_name = report.alpha_name + '.py'), os.path.join(base_dir, 'pysimulator'))
+    shutil.copy(get_dir(get_path(report.file), file_name = 'config.xml'), os.path.join(base_dir, 'pysimulator'))
 
 def get_dir(path , file_name = None):
     if file_name == None:
