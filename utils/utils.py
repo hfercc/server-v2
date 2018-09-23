@@ -108,7 +108,7 @@ def compile_alpha(report):
     pipe.communicate()
     if os.path.exists('output'):
         fileset =  FileRecord.objects.filter(Q(author=report.author) & Q(report=report))
-        print(fileset)
+        print(len(fileset))
         if (len(fileset) == 0):
             FileRecord.objects.create(content=open(os.path.join('output','output_pnl.png'), 'rb').read(), author=report.author, report=report, name='output_pnl.png')
             FileRecord.objects.create(content=open(os.path.join('output','output_ret.csv'), 'rb').read(), author=report.author, report=report, name='output_ret.csv')
