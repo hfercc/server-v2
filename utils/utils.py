@@ -115,13 +115,11 @@ def compile_alpha(report):
             for f in fileset:
                 if f.name == 'output_pnl.png':
                     f.content = open(os.path.join('output','output_pnl.png'), 'rb').read()
-                    print(f.content)
                 elif f.name == 'output_ret.csv':
                     f.content = open(os.path.join('output','output_ret.csv'), 'rb').read()
                 else:
                     f.content = open(os.path.join('output','output_performance.csv'), 'rb').read()
                 f.save(update_fields=['content'])
-                print(f.content)
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
         shutil.rmtree('build')
         os.remove('alpha/{}.so'.format(report.alpha_name))
