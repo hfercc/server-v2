@@ -24,9 +24,9 @@ def get_path(report):
     base_dir = '/'.join(PROJECT_ROOT.split('/')[:-1])
     return os.path.join(base_dir, report.file[1:])
 def prepare(report):
-    full_path = get_path(report.file)
-    shutil.copy(get_dir(get_path(report.file), file_name = report.alpha_name + '.py'), os.path.join(base_dir, 'pysimulator'))
-    shutil.copy(get_dir(get_path(report.file), file_name = 'config.xml'), os.path.join(base_dir, 'pysimulator'))
+    full_path = get_path(report)
+    shutil.copy(get_dir(get_path(report), file_name = report.alpha_name + '.py'), os.path.join(base_dir, 'pysimulator'))
+    shutil.copy(get_dir(get_path(report), file_name = 'config.xml'), os.path.join(base_dir, 'pysimulator'))
 
 def get_dir(path , file_name = None):
     if file_name == None:

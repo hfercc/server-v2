@@ -10,8 +10,9 @@ import fcntl
 
 @task
 def Query(pk):
-    report = Report.objects.get(id=pk)
-    print('jobs {} running....' % report.report_id)
+    print(pk)
+    report = Report.objects.get(report_id=pk)
+    print('jobs {} running....'.format(pk))
     report.status = 1
     report.save()
     print(report.alpha_name, report.file)
