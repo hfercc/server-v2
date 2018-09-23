@@ -29,7 +29,6 @@ def download_key(request, report, file_name):
         if len(files) > 0:
             if file_name == 'output_pnl.png':
                 ret = StreamingHttpResponse(files[0].content)
-                filename = files[0].path.split('/')[-1]
                 ret['Content-Type'] = 'image/jpeg'
             elif file_name == 'output_performance.csv':
                 ret = []
