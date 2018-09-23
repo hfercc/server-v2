@@ -116,6 +116,15 @@ def compile_alpha(report):
             FileRecord.objects.create(content=open(os.path.join(get_dir(get_path(report)), 'output','output_pnl.png'), 'rb').read(), author=report.author, report=report, name='output_pnl.png')
             FileRecord.objects.create(content=open(os.path.join(get_dir(get_path(report)), 'output','output_ret.csv'), 'rb').read(), author=report.author, report=report, name='output_ret.csv')
             FileRecord.objects.create(content=open(os.path.join(get_dir(get_path(report)), 'output','output_performance.csv'), 'rb').read(), author=report.author, report=report,name='output_performance.csv')
+        else:
+            for f in fileset:
+                if f.name == 'output_pnl.png':
+                    f.content = open(os.path.join(get_dir(get_path(report)), 'output','output_pnl.png'), 'rb').read()
+                elif f.name == 'output_ret.csv':
+                    f.content = open(os.path.join(get_dir(get_path(report)), 'output','output_ret.csv'), 'rb').read()
+                else:
+                    f.content = open(os.path.join(get_dir(get_path(report)), 'output','output_performance.csv'), 'rb').read()
+                f.save()
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
         shutil.rmtree('build')
         os.remove('alpha/{}.so'.format(report.alpha_name))
