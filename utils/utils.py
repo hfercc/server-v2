@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 import re
-
+import base64
 import tempfile
 import os.path
 import functools
@@ -111,13 +111,13 @@ def compile_alpha(report):
     if os.path.exists('output'):
         fileset =  FileRecord.objects.filter(Q(author=report.author) & Q(report=report))
         if (len(fileset) == 0):
-            FileRecord.objects.create(content=open(os.path.join('output','output_pnl.png'), 'rb').read(), author=report.author, report=report, name='output_pnl.png')
+            FileRecord.objects.create(content=base64.b64encode(open(os.path.join('output','output_pnl.png'), 'rb').read()), author=report.author, report=report, name='output_pnl.png')
             FileRecord.objects.create(content=open(os.path.join('output','output_ret.csv'), 'rb').read(), author=report.author, report=report, name='output_ret.csv')
             FileRecord.objects.create(content=open(os.path.join('output','output_performance.csv'), 'rb').read(), author=report.author, report=report,name='output_performance.csv')
         else:
             for f in fileset:
                 if f.name == 'output_pnl.png':
-                    f.content = open(os.path.join('output','output_pnl.png'), 'rb').read()
+                    f.content = base64.b64encode(open(os.path.join('output','output_pnl.png'), 'rb').read())
                 elif f.name == 'output_ret.csv':
                     f.content = open(os.path.join('output','output_ret.csv'), 'rb').read()
                 else:
