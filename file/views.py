@@ -34,7 +34,7 @@ def download_key(request, report, file_name):
                 ret['Content-Type'] = 'image/jpeg'
             elif file_name == 'output_performance.csv':
                 ret = []
-                print(files[0].content)
+                print(files[0].content.split('\n'))
                 '''
                 with open(files[0].path) as f:
                     r = list(csv.reader(f))
