@@ -50,7 +50,6 @@ def store_file(fd, user, alpha_name):
 
 def unzip(report):
     full_path = get_path(report)
-    print(full_path)
     try:
         f = zipfile.ZipFile(full_path, 'r')
         path_to = get_dir(full_path)
@@ -102,7 +101,6 @@ def compile_alpha(report):
     with open('config_compile.xml', 'w') as f:
         x = get('config.xml')
         x = generate(x)
-        print(x)
         f.write(x)
     pipe = subprocess.Popen('python run.py -c config_compile.xml' , shell=True, env=env)
     pipe.communicate()
