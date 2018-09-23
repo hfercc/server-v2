@@ -4,7 +4,6 @@ def get(file):
     domobj = xmldom.parse(file)
     elementobj = domobj.documentElement
     r = list(elementobj.getElementsByTagName("Alpha"))
-    print(r[0].toxml())
     return r
 
 def generate(t):
