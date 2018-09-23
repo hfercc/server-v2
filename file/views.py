@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import FileResponse, Http404, HttpResponse
+from django.http import StreamingHttpResponse, Http404, HttpResponse
 
 from rest_framework.permissions import IsAuthenticated
 from utils.permissions import IsOwnerOrReadOnly
@@ -28,11 +28,13 @@ def download_key(request, report, file_name):
         files = FileRecord.objects.filter(Q(author=user) & Q(report__alpha_name=report) & Q(name=file_name))
         if len(files) > 0:
             if file_name == 'output_pnl.png':
-                ret = FileResponse(open(files[0].path, 'rb'))
+                ret = StreamingHttpResponse(files[0].content)
                 filename = files[0].path.split('/')[-1]
                 ret['Content-Type'] = 'image/jpeg'
             elif file_name == 'output_performance.csv':
                 ret = []
+                print(files[0].content)
+                '''
                 with open(files[0].path) as f:
                     r = list(csv.reader(f))
                 regex = re.compile('\s+')
@@ -40,6 +42,7 @@ def download_key(request, report, file_name):
                 columns[0] = 'period'
                 for i in range(1, len(r)):
                     ret.append(dict(zip(columns, regex.split(r[i][0].strip()))))
+                '''
                 return HttpResponse(json.dumps({'ret':ret}), content_type="application/json")
 
             else:
