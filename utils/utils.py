@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 import re
-import base64
 import tempfile
 import os.path
 import functools
@@ -117,7 +116,7 @@ def compile_alpha(report):
         else:
             for f in fileset:
                 if f.name == 'output_pnl.png':
-                    f.content = base64.b64encode(open(os.path.join('output','output_pnl.png'), 'rb').read())
+                    f.content = open(os.path.join('output','output_pnl.png'), 'rb').read()
                 elif f.name == 'output_ret.csv':
                     f.content = open(os.path.join('output','output_ret.csv'), 'rb').read()
                 else:

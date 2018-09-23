@@ -29,7 +29,7 @@ def download_key(request, report, file_name):
         files = FileRecord.objects.filter(Q(author=user) & Q(report__alpha_name=report) & Q(name=file_name))
         if len(files) > 0:
             if file_name == 'output_pnl.png':
-                ret = StreamingHttpResponse(base64.b64decode(files[0].content))
+                ret = StreamingHttpResponse(files[0].content)
                 print(ret)
                 ret['Content-Type'] = 'image/jpeg'
             elif file_name == 'output_performance.csv':
