@@ -43,6 +43,7 @@ def store_file(fd, user, alpha_name):
     """
     full_path = default_storage.path(os.path.join(user.username, alpha_name, os.path.basename(fd.name)))
     if (os.path.exists(full_path)):
+        print('overwrite')
         os.remove(full_path)
     name = default_storage.save(os.path.join(user.username, alpha_name, os.path.basename(fd.name)), fd)
 
@@ -57,6 +58,7 @@ def unzip(report):
             if file in ['config.xml','report.pdf', report.alpha_name + '.py']:
                 print(os.path.join(path_to, file))
                 if os.path.exists(os.path.join(path_to, file)):
+                    print('overwrite')
                     os.remove(os.path.join(path_to, file))
                 f.extract(file, path_to)
         f.close()
