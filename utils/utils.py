@@ -57,6 +57,7 @@ def unzip(report):
             if file in ['config.xml','report.pdf', report.alpha_name + '.py']:
                 print(os.path.join(path_to, file))
                 if os.path.exists(os.path.join(path_to, file)):
+                    print('overwrite')
                     os.remove(os.path.join(path_to, file))
                 f.extract(file, path_to)
         f.close()
@@ -108,6 +109,7 @@ def compile_alpha(report):
     with open('config_compile.xml', 'w') as f:
         x = get('config.xml')
         x = generate(x)
+        print(x)
         f.write(x)
     pipe = subprocess.Popen('python run.py -c config_compile.xml' , shell=True, env=env)
     pipe.communicate()
