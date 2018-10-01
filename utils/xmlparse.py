@@ -8,7 +8,7 @@ def get(file):
 
 def generate(t):
     p1 = '<Config> \
-    <SimulationSetting startdate="20170607" enddate="20180607" backdays="2" enable_performance="true" timeit="true" /> \
+    <SimulationSetting startdate="20090101" enddate="20180607" backdays="2" enable_performance="true" timeit="true" /> \
     <Date id="dates" path="./lib/dates_loader.so" datapath="/opt/data/research_cache/WindData" /> \
     <Ticker id="tickers" path="./lib/tickers_loader.so" datapath="/opt/data/research_cache/WindData"/> \
     <Universe id="universe" type="ALL" path="./lib/redis_universe_loader.so" datapath="/opt/data/research_cache/WindData"/> \
