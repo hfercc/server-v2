@@ -12,4 +12,7 @@ class Report(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     add_time = models.DateTimeField(default=datetime.now)
     error_message = models.CharField(max_length=100, blank=True, default="")
+    type_code = models.IntegerField(default=0)
+    universe = models.IntegerField(default=0)
     #modified_time = models.DateTimeField(u"修改时间", default=datetime.now)
+    alpha_type=models.IntegerField(default=0)

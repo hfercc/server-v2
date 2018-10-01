@@ -43,7 +43,6 @@ def store_file(fd, user, alpha_name):
     """
     full_path = default_storage.path(os.path.join(user.username, alpha_name, os.path.basename(fd.name)))
     if (os.path.exists(full_path)):
-        print('overwrite')
         os.remove(full_path)
     name = default_storage.save(os.path.join(user.username, alpha_name, os.path.basename(fd.name)), fd)
 
@@ -67,10 +66,16 @@ def unzip(report):
 
 def validate_files(report):
     folder = get_dir((get_path(report)))
-    for file in [report.alpha_name + '.py','config.xml','report.pdf']:
-        if not os.path.exists(os.path.join(folder, file)):
-            return False
-    return True
+    if report.type==0:
+        for file in [report.alpha_name + '.py','config.xml','report.pdf']:
+            if not os.path.exists(os.path.join(folder, file)):
+                return False
+        return True
+    else:
+        for file in ['config.xml','report.pdf']:
+            if not os.path.exists(os.path.join(folder, file)):
+                return False
+        return True
 
 def compile_alpha(report):
     '''
@@ -98,11 +103,13 @@ def compile_alpha(report):
     env['PYTHONPATH']='/home/alpha-service/PySimulator-Research-1.0.0/lib:/home/alpha-service/PySimulator-Research-1.0.0/alpha' 
     prepare(report)
     os.chdir(os.path.join(base_dir, 'pysimulator'))
-    pipe = subprocess.Popen('./compile.sh {}'.format(report.alpha_name + '.py') , shell=True, env=env)
-    pipe.communicate()
+    if report.type == 0:
+        pipe = subprocess.Popen('./compile.sh {}'.format(report.alpha_name + '.py') , shell=True, env=env)
+        pipe.communicate()
     with open('config_compile.xml', 'w') as f:
         x = get('config.xml')
         x = generate(x)
+        print(x)
         f.write(x)
     pipe = subprocess.Popen('python run.py -c config_compile.xml' , shell=True, env=env)
     pipe.communicate()
