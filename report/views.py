@@ -62,7 +62,7 @@ class ReportsViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.Retr
             return ReportsSerializer
     def perform_create(self, serializer):
         report = serializer.save(author=self.request.user)
-        Query.delay(report)
+        Query.delay(report.report_id)
     def perform_update(self, serializer):
         report = serializer.save(status=0)
         Query.delay(report.report_id) 
