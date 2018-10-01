@@ -65,7 +65,7 @@ def unzip(report):
 
 def validate_files(report):
     folder = get_dir((get_path(report)))
-    if report.type==0:
+    if report.alpha_type==0:
         for file in [report.alpha_name + '.py','config.xml','report.pdf']:
             if not os.path.exists(os.path.join(folder, file)):
                 return False
@@ -102,7 +102,7 @@ def compile_alpha(report):
     env['PYTHONPATH']='/home/alpha-service/PySimulator-Research-1.0.0/lib:/home/alpha-service/PySimulator-Research-1.0.0/alpha' 
     prepare(report)
     os.chdir(os.path.join(base_dir, 'pysimulator'))
-    if report.type == 0:
+    if report.alpha_type == 0:
         pipe = subprocess.Popen('./compile.sh {}'.format(report.alpha_name + '.py') , shell=True, env=env)
         pipe.communicate()
     with open('config_compile.xml', 'w') as f:
