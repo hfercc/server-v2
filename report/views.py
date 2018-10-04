@@ -29,7 +29,7 @@ def upload_report(request):
     if 'file' not in request.FILES:
         raise ValidationError('Field `file` not found.')
 
-    filename, _ = store_file(request.FILES['file'], request.user, '_'.join(['alpha', request.data['alpha_name'], request.data['type_code'], request.data['universe']]))
+    filename, _ = store_file(request.FILES['file'], request.user, request.data['alpha_name'])
     url = default_storage.url(filename)
 
     #request.user.update_avatar(url)
