@@ -3,6 +3,8 @@ from rest_framework import serializers, status
 from .models import Report
 from rest_framework.validators import UniqueValidator
 from django.db.models import Q
+types = ['longshort','longonly','IC_hedge','IF_hedge']
+universe = ['ALL','zz500','hs300']
 class ReportsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
@@ -15,10 +17,10 @@ class ReportsCreateSerializer(serializers.ModelSerializer):
     error_message = serializers.ReadOnlyField()
     backtest_img = serializers.ReadOnlyField()
     def validate(self, data):
-        alpha_name = data['alpha_name']
+        alpha_name = '_'.join(['alpha',data['alpha_name'], types[data['types']], universe[data['universe']]])
         user = self.context['request'].user
         queryset = Report.objects.filter(Q(author__exact=user) & Q(alpha_name__exact=alpha_name))
-        print(user, alpha_name, queryset)
+        data['alpha_name'] = alpha_name
         if len(queryset) > 0:
             raise serializers.ValidationError(u'因子重名！', code=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return data

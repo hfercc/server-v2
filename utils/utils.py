@@ -54,12 +54,13 @@ def unzip(report):
         f = zipfile.ZipFile(full_path, 'r')
         path_to = get_dir(full_path)
         for file in f.namelist():
-            if file in ['config.xml','report.pdf', report.alpha_name + '.py']:
-                print(os.path.join(path_to, file))
+            if file in ['config.xml','report.pdf',  'alpha.py']:
+
                 if os.path.exists(os.path.join(path_to, file)):
                     print('overwrite')
                     os.remove(os.path.join(path_to, file))
                 f.extract(file, path_to)
+        os.renmae(os.path.join(path_to, 'alpha.py'), os.path.join(path_to, report.alpha_name + '.py'))
         f.close()
     except:
         pass
