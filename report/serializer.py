@@ -16,6 +16,7 @@ class ReportsCreateSerializer(serializers.ModelSerializer):
     backtest_img = serializers.ReadOnlyField()
     def validate(self, data):      
         user = self.context['request'].user
+        alpha_name = data['alpha_name']
         queryset = Report.objects.filter(Q(author__exact=user) & Q(alpha_name__exact=alpha_name))
         if len(queryset) > 0:
             raise serializers.ValidationError(u'因子重名！', code=status.HTTP_500_INTERNAL_SERVER_ERROR)
