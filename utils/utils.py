@@ -61,7 +61,7 @@ def unzip(report):
                     print('overwrite')
                     os.remove(os.path.join(path_to, file))
                 f.extract(file, path_to)
-        os.renmae(os.path.join(path_to, 'alpha.py'), os.path.join(path_to, report.alpha_name + '.py'))
+        os.rename(os.path.join(path_to, 'alpha.py'), os.path.join(path_to, report.alpha_name + '.py'))
         f.close()
     except:
         pass
