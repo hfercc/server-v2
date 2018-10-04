@@ -14,10 +14,10 @@ class ReportsCreateSerializer(serializers.ModelSerializer):
     add_time = serializers.DateTimeField(read_only=True, format='%Y-%m-%d %H:%M')
     error_message = serializers.ReadOnlyField()
     backtest_img = serializers.ReadOnlyField()
-    types = ['longshort','longonly','IC_hedge','IF_hedge']
-    universe = ['ALL','zz500','hs300']
+    self.types = ['longshort','longonly','IC_hedge','IF_hedge']
+    self.universe = ['ALL','zz500','hs300']
     def validate(self, data):
-        alpha_name = '_'.join(['alpha',data['alpha_name'], types[data['types']], universe[data['universe']]])
+        alpha_name = '_'.join(['alpha',data['alpha_name'], self.types[data['types']], self.universe[data['universe']]])
         user = self.context['request'].user
         queryset = Report.objects.filter(Q(author__exact=user) & Q(alpha_name__exact=alpha_name))
         data['alpha_name'] = alpha_name
