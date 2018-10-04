@@ -16,6 +16,7 @@ import subprocess
 from .xmlparse import get, generate
 import json
 from file.models import FileRecord
+import alpha_check_and_release as A
 
 from glob import glob
 libs_dir = os.path.join(default_storage.path(MEDIA_ROOT),'libs')
@@ -130,7 +131,37 @@ def compile_alpha(report):
                 else:
                     f.content = open(os.path.join('output','output_performance.csv'), 'rb').read()
                 f.save(update_fields=['content'])
+        (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary) = A.read_from_path('output/output_performance.csv', 'output/output_ret.csv')
+        print '[INFO]check alpha_id uniqueness...'
+        if check_unique_alphaid(report.alpha_name) == False:
+            print '[INFO]check alpha_id uniqueness: Failed'
+        else:
+            print '[INFO]check alpha_id uniqueness: OK'
+            print '[INFO]check criterion...'
+            if check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret):
+                print '[INFO]check criterion: OK'
+
+                # insert this alpha into table alpha_details        
+                print '[INFO]insert into DB...'
+                insert2db(report.alpha_name, report.type, report.universe, report.author, yearly_tvr, yearly_ret, yearly_sharpe)
+                print '[INFO]insert into DB: OK'
+
+                # copy .so file to /opt/data/alpha/lib
+                if report.alpha_type == 0:
+                    print '[INFO]copy .so to /opt/data/alpha/lib...'
+                    copy_so_file_2lib(os.path.join('build',report.alpha_name + '.py'))
+                    print '[INFO]copy .so to /opt/data/alpha/lib: OK'
+
+                    print '[INFO]copy source file to /home/alpha-service/source_file_tmp...'
+                    submit_source_file_2Git(report.alpha_name + '.py')
+                    print '[INFO]copy source file to /home/alpha-service/source_file_tmp: OK'
+
+                # copy config file to /opt/data/alpha/configs
+                print '[INFO]copy config to /opt/data/alpha/configs...'
+                copy_config_file_2configs('config_compile.xml', report.alpha_name)
+                print '[INFO]copy config to /opt/data/alpha/configs: OK'
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
+        os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py'))
         shutil.rmtree('build')
         os.remove('alpha/{}.so'.format(report.alpha_name))
         shutil.rmtree('output')
