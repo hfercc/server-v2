@@ -16,7 +16,7 @@ import subprocess
 from .xmlparse import get, generate
 import json
 from file.models import FileRecord
-import alpha_check_and_release as A
+from alpha_check_and_release import *
 
 from glob import glob
 libs_dir = os.path.join(default_storage.path(MEDIA_ROOT),'libs')
@@ -131,7 +131,7 @@ def compile_alpha(report):
                 else:
                     f.content = open(os.path.join('output','output_performance.csv'), 'rb').read()
                 f.save(update_fields=['content'])
-        (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary) = A.read_from_path('output/output_performance.csv', 'output/output_ret.csv')
+        (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary) = read_from_path('output/output_performance.csv', 'output/output_ret.csv')
         print '[INFO]check alpha_id uniqueness...'
         if check_unique_alphaid(report.alpha_name) == False:
             print '[INFO]check alpha_id uniqueness: Failed'
@@ -153,7 +153,7 @@ def compile_alpha(report):
                     print '[INFO]copy .so to /opt/data/alpha/lib: OK'
 
                     print '[INFO]copy source file to /home/alpha-service/source_file_tmp...'
-                    submit_source_file_2Git(report.alpha_name + '.py')
+                    A.submit_source_file_2Git(report.alpha_name + '.py')
                     print '[INFO]copy source file to /home/alpha-service/source_file_tmp: OK'
 
                 # copy config file to /opt/data/alpha/configs
