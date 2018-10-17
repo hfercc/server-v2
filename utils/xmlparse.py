@@ -12,7 +12,7 @@ def generate(t, report):
     p1 = '<Config><SimulationSetting startdate="20090101" enddate="20180501" backdays="20" enable_performance="true" timeit="true"/> \
   <Date id="dates" path="dates_loader.so" datapath="/home/data/research_cache/JYData"/> \
   <Ticker id= "tickers" path="tickers_loader.so" datapath="/home/data/research_cache/JYData"/> \
-  <Universe id="universe" type="' + universe_[report.universe] + '"path="universe_loader.so" datapath="/home/data/research_cache/JYData"/> \
+  <Universe id="universe" type="' + universe_[report.universe] + '" path="universe_loader.so" datapath="/home/data/research_cache/JYData"/> \
   <DataLoader id="tradable" path="tradable_loader.so" datapath="/home/data/research_cache/JYData"/> \
   <DataLoader id="essentials" path="day_data_loader.so"  datapath="/home/data/research_cache/JYData"/> \
   <DataLoader id="IndexLoader" path="index_data_loader.so" datapath="/home/data/research_cache/JYData" index="IC,IF,IC888,IF888"/> \
