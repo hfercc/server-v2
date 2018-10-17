@@ -103,7 +103,7 @@ def compile_alpha(report):
         return False
     '''
     env=os.environ.copy()
-    env['PYTHONPATH']='/home/alpha-service/PySimulator-Research-1.0.0/lib:/home/alpha-service/PySimulator-Research-1.0.0/alpha' 
+    env['PYTHONPATH']='/home/data/Simulator/MXSimulator-Research-1.0.0/lib:/home/data/Simulator/MXSimulator-Research-1.0.0/alpha' 
     prepare(report)
     os.chdir(os.path.join(base_dir, 'pysimulator'))
     if report.alpha_type == 0:
@@ -149,18 +149,18 @@ def compile_alpha(report):
 
                 # copy .so file to /opt/data/alpha/lib
                 if report.alpha_type == 0:
-                    print '[INFO]copy .so to /opt/data/alpha/lib...'
+                    print '[INFO]copy .so to /home/data/alpha/lib...'
                     copy_so_file_2lib(os.path.join('build',report.alpha_name + '.py'))
-                    print '[INFO]copy .so to /opt/data/alpha/lib: OK'
+                    print '[INFO]copy .so to /home/data/alpha/lib: OK'
 
                     print '[INFO]copy source file to /home/alpha-service/source_file_tmp...'
                     A.submit_source_file_2Git(report.alpha_name + '.py')
                     print '[INFO]copy source file to /home/alpha-service/source_file_tmp: OK'
 
                 # copy config file to /opt/data/alpha/configs
-                print '[INFO]copy config to /opt/data/alpha/configs...'
+                print '[INFO]copy config to /home/data/alpha/configs...'
                 copy_config_file_2configs('config_compile.xml', report.alpha_name)
-                print '[INFO]copy config to /opt/data/alpha/configs: OK'
+                print '[INFO]copy config to /home/data/alpha/configs: OK'
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
         os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py'))
         shutil.rmtree('build')
