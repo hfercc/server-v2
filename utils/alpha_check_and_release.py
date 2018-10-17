@@ -35,7 +35,7 @@ def  check_unique_alphaid(alpha_id):
 # @param corr_limit the upper limit of correlation
 # @return True if the highest correlation <= corr_limit otherwise False
 def check_correlation(ret, corr_limit):
-    all_return_dir = '/opt/data/alpha/factor_return'
+    all_return_dir = '/home/data/alpha/factor_return'
     ret_file_list = os.listdir(all_return_dir)
     max_corr = -1
     for ret_f in ret_file_list:
@@ -66,7 +66,9 @@ def check_sharpe_ratio(year_sharpe, overall_sharpe, year_sharpe_limit, overall_s
 # @param cost_rate 
 # @return True or False
 def check_turnover_return(overall_tvr, overall_ret, cost_rate=0.0016):
-    if overall_tvr/2.0 * 250 * cost_rate <= overall_ret:
+    if overall_tvr <= 0.4:
+        return True
+    elif overall_tvr/2.0 * 250 * cost_rate <= overall_ret:
         return True
     else:
         return False
@@ -86,8 +88,8 @@ def read_from_path(performance_path, return_path):
         tokens = line.split()
         if len(tokens) < 8:
             continue
-        tvr_list.append(float(tokens[1]))
-        ret_list.append(float(tokens[2]))
+        tvr_list.append(float(tokens[1])/100.0)
+        ret_list.append(float(tokens[2])/100.0)
         sharpe_list.append(float(tokens[6]))
 
     daily_ret_list = []
@@ -153,7 +155,7 @@ def insert2db(alpha_id, s_type, universe, author, yearly_tvr, yearly_ret, yearly
         conn.close()
 
 def copy_so_file_2lib(so_file_path):
-    os.system("scp {0} alpha-service@192.168.0.169:/opt/data/alpha/lib/".format(so_file_path))
+    os.system("scp {0} alpha-service@192.168.0.169:/home/data/alpha/lib/".format(so_file_path))
 
 # copy source file to 192.168.0.169:/home/alpha-service/source_file_tmp/ first
 # then use cron job to add the new source file to git repository
@@ -169,7 +171,7 @@ def read_xml(in_path):
 def copy_config_file_2configs(original_config_path, alpha_id):
     ## read original_config_path
     ## modify items in the original_config_path, for example, enddate in <SimulationSetting>, path in <Alpha>, output_name and save_dir in <Performance>..
-    ## save the modified config and then copy it to /opt/data/alpha/configs
+    ## save the modified config and then copy it to /home/data/alpha/configs
     tree = read_xml(original_config_path)
     root = tree.getroot()
     simset_node = root.find('SimulationSetting')
@@ -182,23 +184,23 @@ def copy_config_file_2configs(original_config_path, alpha_id):
     dumper_node = Element('AlphaDumper')
     dumper_node.set('id', 'AlphaDumper')
     dumper_node.set('path', 'binary_dumper.so')
-    dumper_node.set('output_dir', '/opt/data/alpha_cache/factor_value/{0}'.format(alpha_id))
+    dumper_node.set('output_dir', '/home/data/alpha_cache/factor_value/{0}'.format(alpha_id))
     root.append(dumper_node)
 
     # set 'path' in Alpha
     alpha_node = root.find('Alpha')
-    alpha_node.set('path', '/opt/data/alpha/lib/alpha_{0}.so'.format(alpha_id))
+    alpha_node.set('path', '/home/data/alpha/lib/alpha_{0}.so'.format(alpha_id))
 
     # set 'output_name', 'save_dir', 'ret_dump_dir' in Performance
     perf_node = root.find('Performance')
     perf_node.set('output_name', alpha_id)
-    perf_node.set('save_dir', '/opt/data/alpha/factor_performance/{0}'.format(alpha_id))
-    perf_node.set('ret_dump_dir', '/opt/data/alpha/factor_return')
+    perf_node.set('save_dir', '/home/data/alpha/factor_performance/{0}'.format(alpha_id))
+    perf_node.set('ret_dump_dir', '/home/data/alpha/factor_return')
 
     # write to temprary file
     tree.write('{0}.xml'.format(alpha_id))
-    # copy to /opt/data/alpha/configs and delete temprary file
-    os.system("scp {0}.xml alpha-service@192.168.0.169:/opt/data/alpha/configs/ && rm -f {1}.xml".format(alpha_id, alpha_id))
+    # copy to /home/data/alpha/configs and delete temprary file
+    os.system("scp {0}.xml alpha-service@192.168.0.169:/home/data/alpha/configs/ && rm -f {1}.xml".format(alpha_id, alpha_id))
 
 if __name__ == '__main__':
     ## python alpha_check_and_release.py --alpha_id WQ083_IC_hedge_zz500 --type IC_hedge --universe zz500 --author xingk --performance_file alpha_submission_test/WQ083_IC_hedge_performance.csv --daily_return_file alpha_submission_test/WQ083_IC_hedge_ret.csv --source_file_path alpha_submission_test/alpha_WQ083_IC_hedge_zz500.py --so_file_path alpha_submission_test/alpha_WQ083_IC_hedge_zz500.so --config_path alpha_submission_test/WQ083_IC_hedge.xml
@@ -234,17 +236,17 @@ if __name__ == '__main__':
         insert2db(options.alpha_id, options.type, options.universe, options.author, yearly_tvr, yearly_ret, yearly_sharpe)
         print '[INFO]insert into DB: OK'
 
-        # copy .so file to /opt/data/alpha/lib
+        # copy .so file to /home/data/alpha/lib
         if options.formula != "true":
-            print '[INFO]copy .so to /opt/data/alpha/lib...'
+            print '[INFO]copy .so to /home/data/alpha/lib...'
             copy_so_file_2lib(options.so_file_path)
-            print '[INFO]copy .so to /opt/data/alpha/lib: OK'
+            print '[INFO]copy .so to /home/data/alpha/lib: OK'
 
             print '[INFO]copy source file to /home/alpha-service/source_file_tmp...'
             submit_source_file_2Git(options.source_file_path)
             print '[INFO]copy source file to /home/alpha-service/source_file_tmp: OK'
 
-        # copy config file to /opt/data/alpha/configs
-        print '[INFO]copy config to /opt/data/alpha/configs...'
+        # copy config file to /home/data/alpha/configs
+        print '[INFO]copy config to /home/data/alpha/configs...'
         copy_config_file_2configs(options.config_path, options.alpha_id)
-        print '[INFO]copy config to /opt/data/alpha/configs: OK'
+        print '[INFO]copy config to /home/data/alpha/configs: OK'
