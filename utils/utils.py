@@ -102,6 +102,8 @@ def compile_alpha(report):
     else:
         return False
     '''
+    universe_ = ['ALL', 'zz500', 'hs300']
+    type_     = ['longshort', 'longonly', 'IC', 'IF']
     env=os.environ.copy()
     env['PYTHONPATH']='/home/data/Simulator/MXSimulator-Research-1.0.0/lib/core:/home/data/Simulator/MXSimulator-Research-1.0.0/lib/loader:/home/data/Simulator/MXSimulator-Research-1.0.0/alpha:/home/alpha-service/server-v2/pysimulator/alpha' 
     prepare(report)
@@ -144,7 +146,7 @@ def compile_alpha(report):
 
                 # insert this alpha into table alpha_details        
                 print '[INFO]insert into DB...'
-                insert2db(report.alpha_name, report.type, report.universe, report.author, yearly_tvr, yearly_ret, yearly_sharpe)
+                insert2db(report.alpha_name, type_[report.type_code], universe_[report.universe], report.author, yearly_tvr, yearly_ret, yearly_sharpe)
                 print '[INFO]insert into DB: OK'
 
                 # copy .so file to /opt/data/alpha/lib
