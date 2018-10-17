@@ -103,7 +103,7 @@ def compile_alpha(report):
         return False
     '''
     env=os.environ.copy()
-    env['PYTHONPATH']='/home/data/Simulator/MXSimulator-Research-1.0.0/lib:/home/data/Simulator/MXSimulator-Research-1.0.0/alpha' 
+    env['PYTHONPATH']='/home/data/Simulator/MXSimulator-Research-1.0.0/lib/core:/home/data/Simulator/MXSimulator-Research-1.0.0/lib/loader:/home/data/Simulator/MXSimulator-Research-1.0.0/alpha' 
     prepare(report)
     os.chdir(os.path.join(base_dir, 'pysimulator'))
     if report.alpha_type == 0:
