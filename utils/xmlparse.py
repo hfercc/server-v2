@@ -19,7 +19,7 @@ def generate(t, report):
   <DataLoader id="IndexLoader" path="index_data_loader.so" datapath="/home/data/research_cache/JYData" index="IC,IF,IC888,IF888"/> \
   <DataLoader id="GICS" GICS="GICS_II" path="GICS_loader.so" datapath="/home/data/research_cache/JYData"/>'
     if report.type_code > 1:
-        p2 = '<Performance id="Performance" path="./lib/core/dummy_performance.so" output_name="output" capital="1000000"' + 'hedge_index="{}"'.format(type_[report.type_code]) + 'save_dir="./output" plot="false"/> \
+        p2 = '<Performance id="Performance" path="./lib/core/dummy_performance.so" output_name="output" capital="1000000" ' + 'hedge_index="{}" '.format(type_[report.type_code]) + 'save_dir="./output" plot="false"/> \
 </Config>'
     else:
         p2 = '<Performance id="Performance" path="./lib/core/dummy_performance.so" output_name="output" capital="1000000" save_dir="./output" plot="false"/> </Config>'
