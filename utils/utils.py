@@ -27,6 +27,7 @@ def get_path(report):
 def prepare(report):
     full_path = get_path(report)
     shutil.copy(get_dir(get_path(report), file_name = report.alpha_name + '.py'), os.path.join(base_dir, 'pysimulator'))
+    if 
     shutil.copy(get_dir(get_path(report), file_name = 'config.xml'), os.path.join(base_dir, 'pysimulator'))
 
 def get_dir(path , file_name = None):
@@ -111,7 +112,7 @@ def compile_alpha(report):
         pipe.communicate()
     with open('config_compile.xml', 'w') as f:
         x = get('config.xml')
-        x = generate(x)
+        x = generate(x, report)
         print(x)
         f.write(x)
     pipe = subprocess.Popen('python run.py -c config_compile.xml' , shell=True, env=env)
