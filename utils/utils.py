@@ -17,6 +17,8 @@ from .xmlparse import get, generate
 import json
 from file.models import FileRecord
 from alpha_check_and_release import *
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 from glob import glob
 libs_dir = os.path.join(default_storage.path(MEDIA_ROOT),'libs')
@@ -146,7 +148,8 @@ def compile_alpha(report):
 
                 # insert this alpha into table alpha_details        
                 print '[INFO]insert into DB...'
-                insert2db(report.alpha_name, type_[report.type_code], universe_[report.universe], report.author, yearly_tvr, yearly_ret, yearly_sharpe)
+                user = User.objects.get(id=report.author)
+                insert2db(report.alpha_name, type_[report.type_code], universe_[report.universe], user.username, yearly_tvr, yearly_ret, yearly_sharpe)
                 print '[INFO]insert into DB: OK'
 
                 # copy .so file to /opt/data/alpha/lib
