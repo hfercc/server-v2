@@ -14,4 +14,5 @@ if __name__ == '__main__':
 
     if file_name == '':
         raise NameError('Source file name is empty')
+    
     setup(ext_modules = cythonize([file_name]))

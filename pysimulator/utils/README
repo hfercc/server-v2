@@ -4,3 +4,17 @@ THIS README CONTAINS USAGES OF SCRIPTS IN UTILS
    1) How to run:
    cd to directory PySimulator-Research and then run the script as follows:	
    python utils/ generate_alpha_formulaic_config.py --alpha_id DummyAlpha --formula "delta(close,1)" --output_dir my_config_dir
+   
+   2) Arguments
+   --alpha_id alpha id
+   --formula alpha formula
+   --output_dir where the generated configs are stored
+   
+2. Usage of get_position_change.py
+   1) How to run:
+   python utils/get_trade_position.py -p output/test/test_position.csv -n 20 -o trade_position.csv
+   
+   2) Arguments
+   -p the position file
+   [-n] optional. top n stock with largest trade volume will be listed. if not set, all stock will be listed.
+   -o where the trade position will be placed

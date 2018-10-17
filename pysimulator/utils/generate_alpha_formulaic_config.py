@@ -14,6 +14,7 @@ if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option('--alpha_id',dest='alpha_id')
     parser.add_option('--formula', dest='formula')
+    parser.add_option('--backdays', dest='backdays', default='')
     parser.add_option('--output_dir', dest='output_dir', default='.')
     parser.add_option('--templates', dest='templates', default='utils/config_templates')
     (options, args) = parser.parse_args()
@@ -28,22 +29,26 @@ if __name__ == "__main__":
 
     configs = os.listdir(options.templates)
     for cfg in configs:
-        read_path = options.templates + '/' + cfg
+        read_path = os.path.join(options.templates, cfg)
         cfg_name = cfg.replace('ALPHAID', options.alpha_id)
         name = cfg_name.split('.')[0]
 
-        target_foldor = options.output_dir + '/config' 
+        target_foldor = os.path.join(options.output_dir,'config')
         if os.path.exists(target_foldor) == False:
             os.makedirs(target_foldor)
 
-        write_path = target_foldor + '/' + cfg_name
+        write_path = os.path.join(target_foldor, cfg_name)
 
         tree = read_xml(read_path)
         root = tree.getroot()
 
         alpha_node = root.find('Alpha')
         alpha_node.set('id', options.alpha_id)
+        alpha_node.set('path', 'alpha_formulaic_filterout_zombie.so')
         alpha_node.set('formula', options.formula)
+        if options.backdays != '':
+            alpha_node.set('backdays', options.backdays)
+
 
         prf_node = root.find('Performance')
         prf_node.set('save_dir', './output/{0}'.format(options.alpha_id))
