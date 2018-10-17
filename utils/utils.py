@@ -148,8 +148,7 @@ def compile_alpha(report):
 
                 # insert this alpha into table alpha_details        
                 print '[INFO]insert into DB...'
-                user = User.objects.get(id=report.author)
-                insert2db(report.alpha_name, type_[report.type_code], universe_[report.universe], user.username, yearly_tvr, yearly_ret, yearly_sharpe)
+                insert2db(report.alpha_name, type_[report.type_code], universe_[report.universe], report.author.username, yearly_tvr, yearly_ret, yearly_sharpe)
                 print '[INFO]insert into DB: OK'
 
                 # copy .so file to /opt/data/alpha/lib
