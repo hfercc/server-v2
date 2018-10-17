@@ -1,9 +1,10 @@
 import xml.dom.minidom as xmldom
 
-def get(file):
+def get(file, report):
     domobj = xmldom.parse(file)
     elementobj = domobj.documentElement
     r = list(elementobj.getElementsByTagName("Alpha"))
+    r[0].attributes['path'].value = './alpha/' + report.alpha_name + '.so'
     return r
 
 def generate(t, report):
