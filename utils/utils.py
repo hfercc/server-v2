@@ -158,7 +158,7 @@ def compile_alpha(report):
                     print '[INFO]copy .so to /home/data/alpha/lib: OK'
 
                     print '[INFO]copy source file to /home/alpha-service/source_file_tmp...'
-                    A.submit_source_file_2Git(report.alpha_name + '.py')
+                    submit_source_file_2Git(report.alpha_name + '.py')
                     print '[INFO]copy source file to /home/alpha-service/source_file_tmp: OK'
 
                 # copy config file to /opt/data/alpha/configs
