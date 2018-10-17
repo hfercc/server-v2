@@ -1,0 +1,18 @@
+<Config>
+  <SimulationSetting startdate="20090101" enddate="20180501" backdays="20" enable_performance="true" timeit="true"/>
+  <Date id="dates" path="dates_loader.so" datapath="/home/data/research_cache/JYData"/>
+  <Ticker id= "tickers" path="tickers_loader.so" datapath="/home/data/research_cache/JYData"/>
+  <Universe id="universe" type="hs300" path="universe_loader.so" datapath="/home/data/research_cache/JYData"/>
+  <DataLoader id="tradable" path="tradable_loader.so" datapath="/home/data/research_cache/JYData"/>
+  <DataLoader id="essentials" path="day_data_loader.so"  datapath="/home/data/research_cache/JYData"/>
+  <DataLoader id="IndexLoader" path="index_data_loader.so" datapath="/home/data/research_cache/JYData" index="IC,IF,IC888,IF888"/>
+  <DataLoader id="GICS" GICS="GICS_II" path="GICS_loader.so" datapath="/home/data/research_cache/JYData"/>
+ <!--put your alpha here -->
+  <!--BEGIN-->
+  <!--END-->
+  <Alpha id="example" path="./alpha/alpha_CloseOpenJump.so">
+    <Operation id="Normalize" path="./lib/alphaop_normalize.so"/> 
+  </Alpha>
+  <Performance id="Performance" path="./lib/dummy_performance.so" capital="100000000" save_dir="output/example" output_name="example_longshort_hs300"/>
+</Config>
+
