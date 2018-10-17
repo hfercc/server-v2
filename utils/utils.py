@@ -56,7 +56,7 @@ def unzip(report):
         path_to = get_dir(full_path)
         for file in f.namelist():
             print(file)
-            if file in ['config.xml','report.pdf', 'alpha.py']:
+            if file in ['config.xml', 'alpha.py']:
 
                 if os.path.exists(os.path.join(path_to, file)):
                     print('overwrite')
@@ -70,7 +70,7 @@ def unzip(report):
 def validate_files(report):
     folder = get_dir((get_path(report)))
     if report.alpha_type==0:
-        for file in [report.alpha_name + '.py','config.xml','report.pdf']:
+        for file in [report.alpha_name + '.py','config.xml']:
             if not os.path.exists(os.path.join(folder, file)):
                 return False
         return True
