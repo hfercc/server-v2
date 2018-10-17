@@ -154,7 +154,7 @@ def compile_alpha(report):
                 # copy .so file to /opt/data/alpha/lib
                 if report.alpha_type == 0:
                     print '[INFO]copy .so to /home/data/alpha/lib...'
-                    copy_so_file_2lib(os.path.join('build',report.alpha_name + '.so'))
+                    copy_so_file_2lib(os.path.join('alpha',report.alpha_name + '.so'))
                     print '[INFO]copy .so to /home/data/alpha/lib: OK'
 
                     print '[INFO]copy source file to /home/alpha-service/source_file_tmp...'
