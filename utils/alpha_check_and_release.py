@@ -7,8 +7,10 @@ import pymysql
 from scipy.stats.stats import pearsonr
 from optparse import OptionParser
 from xml.etree.ElementTree import ElementTree,Element
+import xml.etree.ElementTree as ET
 import datetime
 import sys
+import glob
 
 ## check whether the given alpha_id exists in alpha_details table
 #  @param alpha_id 
@@ -34,18 +36,23 @@ def  check_unique_alphaid(alpha_id):
 # @param ret numpy array
 # @param corr_limit the upper limit of correlation
 # @return True if the highest correlation <= corr_limit otherwise False
-def check_correlation(ret, corr_limit):
+def check_correlation(ret, corr_limit, sim_type, universe):
     all_return_dir = '/home/data/alpha/factor_return'
-    ret_file_list = os.listdir(all_return_dir)
+    ret_file_list = glob.glob(all_return_dir + '/*{0}_{1}*'.format(sim_type, universe))
     max_corr = -1
+    max_corr_id = ''
     for ret_f in ret_file_list:
-        ret_f_path = os.path.join(all_return_dir, ret_f)
-        ret_ary = np.fromfile(ret_f_path)
+        #ret_f_path = os.path.join(all_return_dir, ret_f)
+        ret_ary = np.fromfile(ret_f)
 
         min_len = min(len(ret),len(ret_ary))
         corr = pearsonr(ret[:min_len], ret_ary[:min_len])[0]
         if corr > max_corr:
             max_corr = corr
+            max_corr_id = ret_f.split('/')[-1].split('.')[0]
+
+    if max_corr > corr_limit:
+        print '[FAILURE][alpha_id:{0},corr:{1}]'.format(max_corr_id, max_corr)
 
     return max_corr <= corr_limit
 
@@ -68,7 +75,7 @@ def check_sharpe_ratio(year_sharpe, overall_sharpe, year_sharpe_limit, overall_s
 def check_turnover_return(overall_tvr, overall_ret, cost_rate=0.0016):
     if overall_tvr <= 0.4:
         return True
-    elif overall_tvr/2.0 * 250 * cost_rate <= overall_ret:
+    elif overall_tvr/2.0 * 250 * cost_rate * 0.8 <= overall_ret:
         return True
     else:
         return False
@@ -118,8 +125,8 @@ def read_from_path(performance_path, return_path):
 
     return (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary)
 
-def check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret):
-    corr_flag = check_correlation(daily_ret_ary, 0.8)
+def check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, sim_type, universe):
+    corr_flag = check_correlation(daily_ret_ary, 0.8, sim_type, universe)
     sharpe_flag = check_sharpe_ratio(yearly_sharpe, overall_sharpe, 0, 1.5)
     turnover_flag = check_turnover_return(overall_tvr, overall_ret, 0.0016)
 
@@ -148,8 +155,9 @@ def insert2db(alpha_id, s_type, universe, author, yearly_tvr, yearly_ret, yearly
     try:
         conn = pymysql.connect(host='192.168.0.166',user='alpha-service',password='MXalpha@2018', db='alphas_info')
         cursor = conn.cursor()
-        sql = "INSERT INTO `alpha_details` (`alpha_id`, `author`, `type`, `universe`, `submission_date`, `turnover_0`, `turnover_1`, `turnover_2`, `turnover_3`, `turnover_4`, `turnover_5`, `turnover_6`, `turnover_7`, `turnover_8`, `turnover_9`, `return_0`, `return_1`, `return_2`, `return_3`, `return_4`, `return_5`, `return_6`, `return_7`, `return_8`, `return_9`, `sharpe_0`, `sharpe_1`, `sharpe_2`, `sharpe_3`, `sharpe_4`, `sharpe_5`, `sharpe_6`, `sharpe_7`, `sharpe_8`, `sharpe_9`) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s)"
-        cursor.execute(sql, (alpha_id, author, s_type, universe, datetime.datetime.now().strftime('%Y%m%d'), float(yearly_tvr[-1]), float(yearly_tvr[-2]), float(yearly_tvr[-3]), float(yearly_tvr[-4]), float(yearly_tvr[-5]), float(yearly_tvr[-6]), float(yearly_tvr[-7]), float(yearly_tvr[-8]), float(yearly_tvr[-9]), float(yearly_tvr[-10]), float(yearly_ret[-1]), float(yearly_ret[-2]), float(yearly_ret[-3]), float(yearly_ret[-4]), float(yearly_ret[-5]), float(yearly_ret[-6]), float(yearly_ret[-7]), float(yearly_ret[-8]), float(yearly_ret[-9]), float(yearly_ret[-10]), float(yearly_sharpe[-1]), float(yearly_sharpe[-2]), float(yearly_sharpe[-3]), float(yearly_sharpe[-4]), float(yearly_sharpe[-5]), float(yearly_sharpe[-6]), float(yearly_sharpe[-7]), float(yearly_sharpe[-8]), float(yearly_sharpe[-9]), float(yearly_sharpe[-10])))
+        formatted_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        sql = "INSERT INTO `alpha_details` (`alpha_id`, `author`, `type`, `universe`, `submission_date`, `turnover_0`, `turnover_1`, `turnover_2`, `turnover_3`, `turnover_4`, `turnover_5`, `turnover_6`, `turnover_7`, `turnover_8`, `turnover_9`, `return_0`, `return_1`, `return_2`, `return_3`, `return_4`, `return_5`, `return_6`, `return_7`, `return_8`, `return_9`, `sharpe_0`, `sharpe_1`, `sharpe_2`, `sharpe_3`, `sharpe_4`, `sharpe_5`, `sharpe_6`, `sharpe_7`, `sharpe_8`, `sharpe_9`, `updatetime`) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s)"
+        cursor.execute(sql, (alpha_id, author, s_type, universe, datetime.datetime.now().strftime('%Y%m%d'), float(yearly_tvr[-1]), float(yearly_tvr[-2]), float(yearly_tvr[-3]), float(yearly_tvr[-4]), float(yearly_tvr[-5]), float(yearly_tvr[-6]), float(yearly_tvr[-7]), float(yearly_tvr[-8]), float(yearly_tvr[-9]), float(yearly_tvr[-10]), float(yearly_ret[-1]), float(yearly_ret[-2]), float(yearly_ret[-3]), float(yearly_ret[-4]), float(yearly_ret[-5]), float(yearly_ret[-6]), float(yearly_ret[-7]), float(yearly_ret[-8]), float(yearly_ret[-9]), float(yearly_ret[-10]), float(yearly_sharpe[-1]), float(yearly_sharpe[-2]), float(yearly_sharpe[-3]), float(yearly_sharpe[-4]), float(yearly_sharpe[-5]), float(yearly_sharpe[-6]), float(yearly_sharpe[-7]), float(yearly_sharpe[-8]), float(yearly_sharpe[-9]), float(yearly_sharpe[-10]), formatted_date))
         conn.commit()
     finally:
         conn.close()
@@ -168,15 +176,18 @@ def read_xml(in_path):
     tree.parse(in_path)
     return tree
 
-def copy_config_file_2configs(original_config_path, alpha_id):
+def copy_config_file_2configs(original_config_path, alpha_id, formula_flag):
     ## read original_config_path
     ## modify items in the original_config_path, for example, enddate in <SimulationSetting>, path in <Alpha>, output_name and save_dir in <Performance>..
     ## save the modified config and then copy it to /home/data/alpha/configs
-    tree = read_xml(original_config_path)
-    root = tree.getroot()
-    simset_node = root.find('SimulationSetting')
+    xml_f = open(original_config_path, 'r')
+    xml_string = xml_f.read()
+    xml_string = xml_string.replace('/home/data/research_cache', '/home/data/cache')
+    xml_f.close()
+    root = ET.fromstring(xml_string)
 
     # set 'enddate' to today
+    simset_node = root.find('SimulationSetting')
     simset_node.set('enddate', datetime.datetime.now().strftime('%Y%m%d'))    
     simset_node.set('enable_dumper', 'true')
 
@@ -184,12 +195,15 @@ def copy_config_file_2configs(original_config_path, alpha_id):
     dumper_node = Element('AlphaDumper')
     dumper_node.set('id', 'AlphaDumper')
     dumper_node.set('path', 'binary_dumper.so')
-    dumper_node.set('output_dir', '/home/data/alpha_cache/factor_value/{0}'.format(alpha_id))
+    dumper_node.set('output_dir', '/home/data/alpha/factor_value/{0}'.format(alpha_id))
     root.append(dumper_node)
 
     # set 'path' in Alpha
     alpha_node = root.find('Alpha')
-    alpha_node.set('path', '/home/data/alpha/lib/alpha_{0}.so'.format(alpha_id))
+    if formula_flag == 'false':
+        alpha_node.set('path', '/home/data/alpha/lib/alpha_{0}.so'.format(alpha_id))
+    else:
+        alpha_node.set('path', 'alpha_formulaic_filterout_zombie.so')
 
     # set 'output_name', 'save_dir', 'ret_dump_dir' in Performance
     perf_node = root.find('Performance')
@@ -198,9 +212,10 @@ def copy_config_file_2configs(original_config_path, alpha_id):
     perf_node.set('ret_dump_dir', '/home/data/alpha/factor_return')
 
     # write to temprary file
+    tree = ET.ElementTree(element=root)
     tree.write('{0}.xml'.format(alpha_id))
     # copy to /home/data/alpha/configs and delete temprary file
-    os.system("scp {0}.xml alpha-service@192.168.0.169:/home/data/alpha/configs/ && rm -f {1}.xml".format(alpha_id, alpha_id))
+    os.system("scp {0}.xml alpha-service@192.168.0.169:/home/alpha-service/production_configs/ && rm -f {1}.xml".format(alpha_id, alpha_id))
 
 if __name__ == '__main__':
     ## python alpha_check_and_release.py --alpha_id WQ083_IC_hedge_zz500 --type IC_hedge --universe zz500 --author xingk --performance_file alpha_submission_test/WQ083_IC_hedge_performance.csv --daily_return_file alpha_submission_test/WQ083_IC_hedge_ret.csv --source_file_path alpha_submission_test/alpha_WQ083_IC_hedge_zz500.py --so_file_path alpha_submission_test/alpha_WQ083_IC_hedge_zz500.so --config_path alpha_submission_test/WQ083_IC_hedge.xml
@@ -212,8 +227,8 @@ if __name__ == '__main__':
     parser.add_option('--author', dest="author")
     parser.add_option('--performance_file', dest='performance_file') # e.g, WQ083_IC_hedge_performance.csv
     parser.add_option('--daily_return_file', dest='daily_return_file') # e.g. WQ083_IC_hedge_ret.csv
-    parser.add_option('--source_file_path', dest="source_file_path") # e.g. alpha_WQ083_IC_hedge_zz500.py
-    parser.add_option('--so_file_path', dest="so_file_path") # e.g. alpha_WQ083_IC_hedge_zz500.so
+    parser.add_option('--source_file_path', dest="source_file_path",default="") # e.g. alpha_WQ083_IC_hedge_zz500.py
+    parser.add_option('--so_file_path', dest="so_file_path",default="") # e.g. alpha_WQ083_IC_hedge_zz500.so
     parser.add_option('--config_path', dest="config_path") # e.g. WQ083_IC_hedge_zz500.xml
     parser.add_option('--formula', dest="formula", default="false")
     (options, args) = parser.parse_args()
@@ -228,7 +243,7 @@ if __name__ == '__main__':
     (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary) = read_from_path(options.performance_file, options.daily_return_file)
     # if the performance satisfy given criterion, insert this alpha into database
     print '[INFO]check criterion...'
-    if check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret):
+    if check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, options.type, options.universe):
         print '[INFO]check criterion: OK'
 
         # insert this alpha into table alpha_details        
@@ -247,6 +262,6 @@ if __name__ == '__main__':
             print '[INFO]copy source file to /home/alpha-service/source_file_tmp: OK'
 
         # copy config file to /home/data/alpha/configs
-        print '[INFO]copy config to /home/data/alpha/configs...'
-        copy_config_file_2configs(options.config_path, options.alpha_id)
-        print '[INFO]copy config to /home/data/alpha/configs: OK'
+        print '[INFO]copy config to /home/alpha-service/production_configs...'
+        copy_config_file_2configs(options.config_path, options.alpha_id, options.formula)
+        print '[INFO]copy config to /home/alpha-service/production_configs: OK'
