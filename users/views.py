@@ -25,6 +25,13 @@ def jwt_response_payload_handler(token, user, request):
         'user': UserDetailSerializer(user, context={'request': request}).data
     }
 
+@decorators.api_view(['GET'])
+@decorators.permission_classes([permissions.IsAuthenticated])
+def logout(request):
+    auth_logout(request)
+
+    return Response('OK')
+    
 class BasicLoginView(JSONWebTokenAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)

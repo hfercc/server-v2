@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.views.static import serve
 from rest_framework.routers import DefaultRouter
 from backtest_py2.settings import MEDIA_ROOT
-from users.views import UserViewset, UserLogin, change_password
+from users.views import UserViewset, UserLogin, change_password, logout
 from report.views import ReportsViewSet, upload_report
 from file.views import download_key
 import xadmin
@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'api/image/<path:path>', serve, {'document_root':MEDIA_ROOT}),
     url(r'^api/files/(?P<report>.*)/(?P<file_name>.*)?/?$', download_key, name='download-file'),
     url(r'api/login/', UserLogin.as_view(), name='login'),
+    url(r'api/logout/', logout, name='logout'),
     url(r'api/users/change_password/', change_password, name='change-password'),
     url(r'api/upload/', upload_report, name='upload-report'),
     url(r'', include(router.urls))
