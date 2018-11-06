@@ -12,6 +12,8 @@ class BaseUserViewSetMixin(viewsets.GenericViewSet):
     def get_user_queryset(self):
         if self.request.user.is_authenticated():
             userset = User.objects.all()
+        else:
+            userset = null
         return userset
     def get_user_object(self):
         lookup = self.kwargs['user_pk']

@@ -136,35 +136,31 @@ def compile_alpha(report):
                 else:
                     f.content = open(os.path.join('output','output_performance.csv'), 'rb').read()
                 f.save(update_fields=['content'])
-        (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary) = read_from_path('output/output_performance.csv', 'output/output_ret.csv')
-        print '[INFO]check alpha_id uniqueness...'
-        if check_unique_alphaid(report.alpha_name) == False:
-            print '[INFO]check alpha_id uniqueness: Failed'
-        else:
-            print '[INFO]check alpha_id uniqueness: OK'
-            print '[INFO]check criterion...'
-            if check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret):
-                print '[INFO]check criterion: OK'
+        (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary) = read_from_path(options.performance_file, options.daily_return_file)
+        # if the performance satisfy given criterion, insert this alpha into database
+        print '[INFO]check criterion...'
+        if check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, options.type, options.universe):
+            print '[INFO]check criterion: OK'
 
-                # insert this alpha into table alpha_details        
-                print '[INFO]insert into DB...'
-                insert2db(report.alpha_name, type_[report.type_code], universe_[report.universe], report.author.username, yearly_tvr, yearly_ret, yearly_sharpe)
-                print '[INFO]insert into DB: OK'
+            # insert this alpha into table alpha_details        
+            print '[INFO]insert into DB...'
+            insert2db(options.alpha_id, options.type, options.universe, options.author, yearly_tvr, yearly_ret, yearly_sharpe)
+            print '[INFO]insert into DB: OK'
 
-                # copy .so file to /opt/data/alpha/lib
-                if report.alpha_type == 0:
-                    print '[INFO]copy .so to /home/data/alpha/lib...'
-                    copy_so_file_2lib(os.path.join('alpha',report.alpha_name + '.so'))
-                    print '[INFO]copy .so to /home/data/alpha/lib: OK'
+            # copy .so file to /home/data/alpha/lib
+            if options.formula != "true":
+                print '[INFO]copy .so to /home/data/alpha/lib...'
+                copy_so_file_2lib(options.so_file_path)
+                print '[INFO]copy .so to /home/data/alpha/lib: OK'
 
-                    print '[INFO]copy source file to /home/alpha-service/source_file_tmp...'
-                    submit_source_file_2Git(report.alpha_name + '.py')
-                    print '[INFO]copy source file to /home/alpha-service/source_file_tmp: OK'
+                print '[INFO]copy source file to /home/alpha-service/source_file_tmp...'
+                submit_source_file_2Git(options.source_file_path)
+                print '[INFO]copy source file to /home/alpha-service/source_file_tmp: OK'
 
-                # copy config file to /opt/data/alpha/configs
-                print '[INFO]copy config to /home/data/alpha/configs...'
-                copy_config_file_2configs('config_compile.xml', report.alpha_name)
-                print '[INFO]copy config to /home/data/alpha/configs: OK'
+            # copy config file to /home/data/alpha/configs
+            print '[INFO]copy config to /home/alpha-service/production_configs...'
+            copy_config_file_2configs(options.config_path, options.alpha_id, options.formula)
+            print '[INFO]copy config to /home/alpha-service/production_configs: OK'
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
         os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py'))
         shutil.rmtree('build')
