@@ -163,7 +163,7 @@ def compile_alpha(report):
 
                 # copy config file to /opt/data/alpha/configs
                 print '[INFO]copy config to /home/alpha-service/production_configs...'
-                copy_config_file_2configs('config_compile.xml', report.alpha_name)
+                copy_config_file_2configs('config_compile.xml', report.alpha_name, report.alpha_type == 1)
                 print '[INFO]copy config to /home/alpha-service/production_configs: OK'
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
         os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py'))
