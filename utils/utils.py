@@ -108,7 +108,7 @@ def compile_alpha(report):
     universe_ = ['ALL', 'zz500', 'hs300']
     type_     = ['longshort', 'longonly', 'IC', 'IF']
     env=os.environ.copy()
-    env['PYTHONPATH']='/home/data/MXSimulator/lib/core:/home/data/MXSimulator/lib/loader:/home/data/MXSimulator/alpha:/home/alpha-service/server-v2/pysimulator/alpha' 
+    env['PYTHONPATH']='/home/data/Simulator/MXSimulator-Research/lib/core:/home/data/Simulator/MXSimulator-Research/lib/loader:/home/alpha-service/server-v2/pysimulator/alpha' 
     prepare(report)
     os.chdir(os.path.join(base_dir, 'pysimulator'))
     if report.alpha_type == 0:
