@@ -167,7 +167,8 @@ def compile_alpha(report):
                 copy_config_file_2configs('config_compile.xml', report.alpha_name, report.alpha_type == 1)
                 print '[INFO]copy config to /home/alpha-service/production_configs: OK'
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
-        os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py'))
+        if report.alpha_type == 0:
+            os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py'))
         shutil.rmtree('build')
         os.remove('alpha/{}.so'.format(report.alpha_name))
         shutil.rmtree('output')
