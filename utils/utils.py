@@ -169,8 +169,8 @@ def compile_alpha(report):
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
         if report.alpha_type == 0:
             os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py'))
-        shutil.rmtree('build')
-        os.remove('alpha/{}.so'.format(report.alpha_name))
+            shutil.rmtree('build')
+            os.remove('alpha/{}.so'.format(report.alpha_name))
         shutil.rmtree('output')
         return True
     else:
