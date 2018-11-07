@@ -144,7 +144,8 @@ def compile_alpha(report):
         else:
             print '[INFO]check alpha_id uniqueness: OK'
             print '[INFO]check criterion...'
-            if check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, type_[report.type_code], universe_[report.universe]):
+            flag, err = check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, type_[report.type_code], universe_[report.universe]):
+            if flag:
                 print '[INFO]check criterion: OK'
 
                 # insert this alpha into table alpha_details        
@@ -166,6 +167,8 @@ def compile_alpha(report):
                 print '[INFO]copy config to /home/alpha-service/production_configs...'
                 copy_config_file_2configs('config_compile.xml', report.alpha_name, report.alpha_type == 1)
                 print '[INFO]copy config to /home/alpha-service/production_configs: OK'
+            else:
+                report.error_message = err
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
         if report.alpha_type == 0:
             os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py'))

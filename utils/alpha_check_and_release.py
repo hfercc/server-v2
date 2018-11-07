@@ -37,6 +37,7 @@ def  check_unique_alphaid(alpha_id):
 # @param corr_limit the upper limit of correlation
 # @return True if the highest correlation <= corr_limit otherwise False
 def check_correlation(ret, corr_limit, sim_type, universe):
+    err = ''
     all_return_dir = '/home/data/alpha/factor_return'
     ret_file_list = glob.glob(all_return_dir + '/*{0}_{1}*'.format(sim_type, universe))
     max_corr = -1
@@ -53,8 +54,9 @@ def check_correlation(ret, corr_limit, sim_type, universe):
 
     if max_corr > corr_limit:
         print '[FAILURE][alpha_id:{0},corr:{1}]'.format(max_corr_id, max_corr)
+        err = '[FAILURE][alpha_id:{0},corr:{1}]'.format(max_corr_id, max_corr)
 
-    return max_corr <= corr_limit
+    return max_corr <= corr_limit, err
 
 ## check whether sharpe ratio satisfy given criterion
 # @param year_sharpe sharpe of each year
@@ -126,23 +128,26 @@ def read_from_path(performance_path, return_path):
     return (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary)
 
 def check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, sim_type, universe):
-    corr_flag = check_correlation(daily_ret_ary, 0.8, sim_type, universe)
+    corr_flag, err_corr = check_correlation(daily_ret_ary, 0.8, sim_type, universe)
     sharpe_flag = check_sharpe_ratio(yearly_sharpe, overall_sharpe, 0, 1.5)
     turnover_flag = check_turnover_return(overall_tvr, overall_ret, 0.0016)
-
+    err = ''
     if corr_flag == False:
         print '[INFO]correlation check: Failed'
+        err = err_corr
 
     if sharpe_flag == False:
         print '[INFO]sharpe check: Failed'
+        err = 'sharpe check: Failed'
 
     if turnover_flag == False:
         print '[INFO]turnover check: Failed' 
+        err = 'turnover check: Failed'
 
     if corr_flag and sharpe_flag and turnover_flag:
-        return True
+        return True, ''
     else:
-        return False
+        return False, err
 
 def insert2db(alpha_id, s_type, universe, author, yearly_tvr, yearly_ret, yearly_sharpe):    
     if len(yearly_tvr) < 10:
