@@ -41,9 +41,8 @@ class BasicLoginView(JSONWebTokenAPIView):
             token = serializer.object.get('token')
             response_data = jwt_response_payload_handler(token, user, request)
             response = Response(response_data)
-            if api_settings.JWT_AUTH_COOKIE:
-                expiration = (datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA)
-                response.set_cookie(api_settings.JWT_AUTH_COOKIE, token, expires=expirationm, httponly=True)
+            expiration = (datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA)
+            response.set_cookie(api_settings.JWT_AUTH_COOKIE, token, expires=expirationm, httponly=True)
             return response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class UserLogin(BasicLoginView):
