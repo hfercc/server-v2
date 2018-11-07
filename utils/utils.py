@@ -167,6 +167,7 @@ def compile_alpha(report):
                 print '[INFO]copy config to /home/alpha-service/production_configs...'
                 copy_config_file_2configs('config_compile.xml', report.alpha_name, report.alpha_type == 1)
                 print '[INFO]copy config to /home/alpha-service/production_configs: OK'
+                report.error_message = ''
             else:
                 report.error_message = err
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
