@@ -4,11 +4,12 @@ def get(file, report):
     domobj = xmldom.parse(file)
     elementobj = domobj.documentElement
     r = list(elementobj.getElementsByTagName("Alpha"))
+    p = list(elementobj.getElementsByTagName("DataLoader"))
     if report.alpha_type == 0:
       r[0].attributes['path'].value = './alpha/' + report.alpha_name + '.so'
-    return r
+    return r, p
 
-def generate(t, report):
+def generate(r, p, report):
     universe_ = ['ALL', 'zz500', 'hs300']
     type_     = ['longshort', 'longonly', 'IC', 'IF']
     p1 = '<Config><SimulationSetting startdate="20090101" enddate="20180501" backdays="20" enable_performance="true" timeit="true"/> \
@@ -26,5 +27,6 @@ def generate(t, report):
 </Config>'
     else:
         p2 = '<Performance id="Performance" path="./lib/core/dummy_performance.so" output_name="output" capital="1000000" save_dir="./output" plot="false"/> </Config>'
-    p3 = ' '.join([p.toxml() for p in t])
-    return p1 + p3 + p2
+    p3 = ' '.join([a.toxml() for a in r])
+    p4 = ' '.join([b.toxml() for b in p])
+    return p4 + p1 + p3 + p2
