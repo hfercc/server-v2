@@ -77,7 +77,7 @@ def validate_files(report):
                 return False
         return True
     else:
-        for file in ['config.xml','report.pdf']:
+        for file in ['config.xml']:
             if not os.path.exists(os.path.join(folder, file)):
                 return False
         return True
