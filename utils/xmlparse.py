@@ -4,7 +4,8 @@ def get(file, report):
     domobj = xmldom.parse(file)
     elementobj = domobj.documentElement
     r = list(elementobj.getElementsByTagName("Alpha"))
-    r[0].attributes['path'].value = './alpha/' + report.alpha_name + '.so'
+    if report.alpha_type == 0:
+      r[0].attributes['path'].value = './alpha/' + report.alpha_name + '.so'
     return r
 
 def generate(t, report):
@@ -18,6 +19,8 @@ def generate(t, report):
   <DataLoader id="essentials" path="day_data_loader.so"  datapath="/home/data/research_cache/JYData"/> \
   <DataLoader id="IndexLoader" path="index_data_loader.so" datapath="/home/data/research_cache/JYData" index="IC,IF,IC888,IF888"/> \
   <DataLoader id="GICS" GICS="GICS_II" path="GICS_loader.so" datapath="/home/data/research_cache/JYData"/>'
+    
+
     if report.type_code > 1:
         p2 = '<Performance id="Performance" path="./lib/core/dummy_performance.so" output_name="output" capital="1000000" ' + 'hedge_index="{}" '.format(type_[report.type_code]) + 'save_dir="./output" plot="false"/> \
 </Config>'
