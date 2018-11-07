@@ -141,6 +141,7 @@ def compile_alpha(report):
         print '[INFO]check alpha_id uniqueness...'
         if check_unique_alphaid(report.alpha_name) == False:
             print '[INFO]check alpha_id uniqueness: Failed'
+            report.error_message = 'check alpha_id uniqueness: Failed'
         else:
             print '[INFO]check alpha_id uniqueness: OK'
             print '[INFO]check criterion...'
