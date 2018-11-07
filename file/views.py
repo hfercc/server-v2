@@ -22,7 +22,6 @@ import base64
 
 # Create your views here.
 @decorators.api_view(['GET'])
-@decorators.permission_classes([permissions.IsAuthenticated])
 def download_key(request, report, file_name):
     user = request.user  
     if file_name:

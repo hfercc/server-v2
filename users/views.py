@@ -43,7 +43,7 @@ class BasicLoginView(JSONWebTokenAPIView):
             response = Response(response_data)
             if api_settings.JWT_AUTH_COOKIE:
                 expiration = (datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA)
-                response.set_cookie(api_settings.JWT_AUTH_COOKIE, token, expires=expirationm, httponly=True)
+                response.set_cookie(api_settings.JWT_AUTH_COOKIE, token, expires=expiration, httponly=True)
             return response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class UserLogin(BasicLoginView):
