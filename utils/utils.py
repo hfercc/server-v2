@@ -59,7 +59,7 @@ def unzip(report):
         path_to = get_dir(full_path)
         for file in f.namelist():
             print(file)
-            if file in ['config.xml', 'alpha.py']:
+            if (file == 'alpha.py') or ('.xml' in file):
 
                 if os.path.exists(os.path.join(path_to, file)):
                     print('overwrite')
@@ -106,7 +106,7 @@ def compile_alpha(report):
         return False
     '''
     universe_ = ['ALL', 'zz500', 'hs300']
-    type_     = ['longshort', 'longonly', 'IC', 'IF']
+    type_     = ['longshort', 'longonly', 'IC_hedge', 'IF_hedge']
     env=os.environ.copy()
     env['PYTHONPATH']='/home/data/Simulator/MXSimulator-Research/lib/core:/home/data/Simulator/MXSimulator-Research/lib/loader:/home/alpha-service/server-v2/pysimulator/alpha' 
     prepare(report)
@@ -139,7 +139,7 @@ def compile_alpha(report):
                 f.save(update_fields=['content'])
         (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary) = read_from_path('output/output_performance.csv', 'output/output_ret.csv')
         print '[INFO]check alpha_id uniqueness...'
-        if check_unique_alphaid(report.alpha_name) == False:
+        if False:
             print '[INFO]check alpha_id uniqueness: Failed'
             report.error_message = 'check alpha_id uniqueness: Failed'
         else:

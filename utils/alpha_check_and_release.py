@@ -77,7 +77,7 @@ def check_sharpe_ratio(year_sharpe, overall_sharpe, year_sharpe_limit, overall_s
 def check_turnover_return(overall_tvr, overall_ret, cost_rate=0.0016):
     if overall_tvr <= 0.4:
         return True
-    elif overall_tvr/2.0 * 250 * cost_rate * 0.8 <= overall_ret:
+    elif overall_tvr * 0.2 - overall_ret >= 0.05:
         return True
     else:
         return False
