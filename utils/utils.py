@@ -64,7 +64,10 @@ def unzip(report):
                 if os.path.exists(os.path.join(path_to, file)):
                     print('overwrite')
                     os.remove(os.path.join(path_to, file))
-                f.extract(file, path_to)
+                if '.xml' in file:
+                    f.extract('config.xml', path_to)
+                else:
+                    f.extract(file, path_to)
         os.rename(os.path.join(path_to, 'alpha.py'), os.path.join(path_to, report.alpha_name + '.py'))
         f.close()
     except:
