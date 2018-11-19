@@ -66,7 +66,8 @@ def unzip(report):
                     print('overwrite')
                     os.remove(os.path.join(path_to, file))
                 f.extract(file, path_to)
-        xml_file = glob(os.path.join(path_to, '*.xml'))
+        xml_file = glob(os.path.join(path_to, '*.xml'))[0]
+        print(xml_file)
         os.rename(xml_file, os.path.join(path_to,'config.xml'))
         os.rename(os.path.join(path_to, 'alpha.py'), os.path.join(path_to, report.alpha_name + '.py'))
         f.close()
