@@ -25,7 +25,7 @@ def Query(pk):
             if submitted_status == 1:
                 report.status = 4
             else:
-                report.status = 5
+                report.status = 2
         else:
             report.status = 3
     else:
