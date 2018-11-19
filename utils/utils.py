@@ -68,7 +68,11 @@ def unzip(report):
                 f.extract(file, path_to)
         xml_file = glob(os.path.join(path_to, '*.xml'))[0]
         print(xml_file)
+        if os.path.exists(os.path.join(path_to,'config.xml')):
+            os.remove(os.path.join(path_to,'config.xml'))
         os.rename(xml_file, os.path.join(path_to,'config.xml'))
+        if os.path.exists(os.path.join(path_to, report.alpha_name + '.py')):
+            os.remove(os.path.join(path_to, report.alpha_name + '.py'))
         os.rename(os.path.join(path_to, 'alpha.py'), os.path.join(path_to, report.alpha_name + '.py'))
         f.close()
     except:
