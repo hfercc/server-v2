@@ -10,12 +10,10 @@ import fcntl
 
 @task
 def Query(pk):
-    print(pk)
     report = Report.objects.get(report_id=pk)
     print('jobs {} running....'.format(pk))
     report.status = 1
     report.save()
-    print(report.alpha_name, report.file)
     flag = False
     utils.unzip(report)
     if (utils.validate_files(report)):

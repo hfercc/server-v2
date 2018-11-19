@@ -173,7 +173,6 @@ def compile_alpha(report):
                 copy_config_file_2configs('config_compile.xml', report.alpha_name, report.alpha_type == 1)
                 print '[INFO]copy config to /home/alpha-service/production_configs: OK'
                 report.error_message = ''
-                return True, 1
             else:
                 report.error_message = err
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
@@ -182,7 +181,10 @@ def compile_alpha(report):
             shutil.rmtree('build')
             os.remove('alpha/{}.so'.format(report.alpha_name))
         shutil.rmtree('output')
-        return True, 0
+        if len(error_message) == 0:
+            return True, 1
+        else:
+            return True, 0
     else:
         return False, 0
 
