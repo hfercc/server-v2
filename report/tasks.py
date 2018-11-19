@@ -20,11 +20,14 @@ def Query(pk):
     utils.unzip(report)
     if (utils.validate_files(report)):
         try:
-            flag = utils.compile_alpha(report)             
+            flag,submitted_status = utils.compile_alpha(report)             
         except RuntimeError as e:
             report.error_message = u"编译错误"
         if (flag == True):
-            report.status = 2
+            if submitted_status == 1:
+                report.status = 4
+            else:
+                report.status = 5
         else:
             report.status = 3
     else:

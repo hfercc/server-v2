@@ -18,6 +18,7 @@ import json
 from file.models import FileRecord
 from alpha_check_and_release import *
 from django.contrib.auth import get_user_model
+from glob import glob
 User = get_user_model()
 
 from glob import glob
@@ -64,10 +65,9 @@ def unzip(report):
                 if os.path.exists(os.path.join(path_to, file)):
                     print('overwrite')
                     os.remove(os.path.join(path_to, file))
-                if '.xml' in file:
-                    f.extract('config.xml', path_to)
-                else:
-                    f.extract(file, path_to)
+                f.extract(file, path_to)
+        xml_file = glob(os.path.join(path_to, '*.xml'))
+        os.rename(xml_file, os.path.join(path_to,'config.xml'))
         os.rename(os.path.join(path_to, 'alpha.py'), os.path.join(path_to, report.alpha_name + '.py'))
         f.close()
     except:
@@ -172,6 +172,7 @@ def compile_alpha(report):
                 copy_config_file_2configs('config_compile.xml', report.alpha_name, report.alpha_type == 1)
                 print '[INFO]copy config to /home/alpha-service/production_configs: OK'
                 report.error_message = ''
+                return True, 1
             else:
                 report.error_message = err
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
@@ -180,9 +181,9 @@ def compile_alpha(report):
             shutil.rmtree('build')
             os.remove('alpha/{}.so'.format(report.alpha_name))
         shutil.rmtree('output')
-        return True
+        return True, 0
     else:
-        return False
+        return False, 0
 
 
 
