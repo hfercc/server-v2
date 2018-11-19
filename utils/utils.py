@@ -181,7 +181,7 @@ def compile_alpha(report):
             shutil.rmtree('build')
             os.remove('alpha/{}.so'.format(report.alpha_name))
         shutil.rmtree('output')
-        if len(error_message) == 0:
+        if len(report.error_message) == 0:
             return True, 1
         else:
             return True, 0
