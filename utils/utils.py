@@ -30,8 +30,8 @@ def get_path(report):
 def prepare(report):
     full_path = get_path(report)
     if report.alpha_type == 0:
-        shutil.copy(get_dir(get_path(report), file_name = report.alpha_name + '.py'), os.path.join(base_dir, 'pysimulator'))
-    shutil.copy(get_dir(get_path(report), file_name = 'config.xml'), os.path.join(base_dir, 'pysimulator'))
+        shutil.move(get_dir(get_path(report), file_name = report.alpha_name + '.py'), os.path.join(base_dir, 'pysimulator'))
+    shutil.move(get_dir(get_path(report), file_name = 'config.xml'), os.path.join(base_dir, 'pysimulator'))
 
 def get_dir(path , file_name = None):
     if file_name == None:
