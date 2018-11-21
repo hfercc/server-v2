@@ -1,5 +1,4 @@
 import sys
-sys.path.append('./lib')
 import pandas as pd
 from scipy.stats.stats import pearsonr
 import numpy as np
@@ -23,7 +22,7 @@ class dummy_alpha(alpha):
 
     def generate(self, alpha_vec, data, di):
         # get stocks that are tradable in the given universe
-        ix = np.logical_and(data['universe'][di, :] == 1, data['tradable'][di, :] == 1)
+        ix = np.logical_and(data['universe'][di-1, :] == 1, data['tradable'][di-1, :] == 1)
 
         for tk in range(alpha_vec.shape[0]):
             if ix[tk]:

@@ -1,5 +1,4 @@
 import sys
-sys.path.append('./lib')
 from optparse import OptionParser
 from alpha_engine import AlphaEngine
 

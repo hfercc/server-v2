@@ -1,5 +1,4 @@
 import sys
-sys.path.append('./lib')
 import numpy as np
 from scipy.stats.stats import pearsonr
 import copy
@@ -22,7 +21,7 @@ class alpha_PriceSwingDiv(alpha):
             
     def generate(self, alaph_vec, data, di):
         # get stocks that are tradable in the given universe
-        ix = np.logical_and(data['universe'][di, :] == 1, data['tradable'][di, :] == 1)
+        ix = np.logical_and(data['universe'][di-1, :] == 1, data['tradable'][di-1, :] == 1)
         
         for i in range(alaph_vec.shape[0]):
             if ix[i]:

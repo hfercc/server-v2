@@ -1,5 +1,4 @@
 import sys
-sys.path.append('./lib')
 import numpy as np
 from alpha import alpha
 
@@ -20,7 +19,7 @@ class alpha_AbnormalVolume(alpha):
     def generate(self, alaph_vec, data, di):
         # get stocks that are tradable in the given universe
 
-        ix = np.logical_and(data['universe'][di, :] == 1, data['tradable'][di, :] == 1)
+        ix = np.logical_and(data['universe'][di-1, :] == 1, data['tradable'][di-1, :] == 1)
 
         alaph_vec[ix] = -1 * data['essentials']['volume'][di-self.delay, ix] \
             / np.nanmean(data['essentials']['volume'][di-self.prev_n:di, ix])

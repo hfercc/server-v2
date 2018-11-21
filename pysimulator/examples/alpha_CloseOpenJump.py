@@ -11,7 +11,7 @@ class dummy_alpha(alpha):
 
     def generate(self, alpha_vec, data, di):
         # get stocks that are tradable in the given universe
-        ix = np.logical_and(data['universe'][di, :] == 1, data['tradable'][di, :] == 1)
+        ix = np.logical_and(data['universe'][di-1, :] == 1, data['tradable'][di-1, :] == 1)
 
         alpha_vec[ix] = data['essentials']['open'][di-self.delay, ix] \
             / data['essentials']['close'][di-self.delay-1, ix]
