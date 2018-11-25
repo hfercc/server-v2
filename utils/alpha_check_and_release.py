@@ -36,7 +36,7 @@ def  check_unique_alphaid(alpha_id):
 # @param ret numpy array
 # @param corr_limit the upper limit of correlation
 # @return True if the highest correlation <= corr_limit otherwise False
-def check_correlation(ret, corr_limit, sim_type, universe):
+def check_correlation(ret, corr_limit, sim_type, universe, my_id):
     err = ''
     all_return_dir = '/home/data/alpha/factor_return'
     ret_file_list = glob.glob(all_return_dir + '/*{0}_{1}*'.format(sim_type, universe))
@@ -52,7 +52,7 @@ def check_correlation(ret, corr_limit, sim_type, universe):
             max_corr = corr
             max_corr_id = ret_f.split('/')[-1].split('.')[0]
 
-    if max_corr > corr_limit:
+    if max_corr > corr_limit and max_corr_id != my_id:
         print '[FAILURE][alpha_id:{0},corr:{1}]'.format(max_corr_id, max_corr)
         err = '[FAILURE][alpha_id:{0},corr:{1}]'.format(max_corr_id, max_corr)
 
@@ -127,8 +127,8 @@ def read_from_path(performance_path, return_path):
 
     return (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary)
 
-def check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, sim_type, universe):
-    corr_flag, err_corr = check_correlation(daily_ret_ary, 0.7, sim_type, universe)
+def check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, sim_type, universe, my_id):
+    corr_flag, err_corr = check_correlation(daily_ret_ary, 0.7, sim_type, universe, my_id)
     sharpe_flag = check_sharpe_ratio(yearly_sharpe, overall_sharpe, 0, 1.5)
     turnover_flag = check_turnover_return(overall_tvr, overall_ret, 0.0016)
     err = ''

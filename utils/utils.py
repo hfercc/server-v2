@@ -153,7 +153,7 @@ def compile_alpha(report):
         else:
             print '[INFO]check alpha_id uniqueness: OK'
             print '[INFO]check criterion...'
-            flag, err = check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, type_[report.type_code], universe_[report.universe])
+            flag, err = check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, type_[report.type_code], universe_[report.universe], report.alpha_name)
             if flag:
                 print '[INFO]check criterion: OK'
 
