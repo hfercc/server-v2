@@ -77,7 +77,7 @@ def check_sharpe_ratio(year_sharpe, overall_sharpe, year_sharpe_limit, overall_s
 def check_turnover_return(overall_tvr, overall_ret, cost_rate=0.0016):
     if overall_tvr <= 0.4:
         return True
-    elif overall_ret - overall_tvr * 0.2 >= 0.05:
+    elif overall_ret - overall_tvr * 0.2 >= 0.1:
         return True
     else:
         return False
@@ -128,7 +128,7 @@ def read_from_path(performance_path, return_path):
     return (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary)
 
 def check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, sim_type, universe):
-    corr_flag, err_corr = check_correlation(daily_ret_ary, 0.8, sim_type, universe)
+    corr_flag, err_corr = check_correlation(daily_ret_ary, 0.7, sim_type, universe)
     sharpe_flag = check_sharpe_ratio(yearly_sharpe, overall_sharpe, 0, 1.5)
     turnover_flag = check_turnover_return(overall_tvr, overall_ret, 0.0016)
     err = ''
