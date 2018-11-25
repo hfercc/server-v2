@@ -67,6 +67,12 @@ class ReportsViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.Retr
         report = serializer.save(status=0)
         Query.delay(report.report_id) 
     def get_queryset(self):
-        queryset = Report.objects.filter(author=self.request.user)
+        sort = self.request.GET.get('ordering', '')
+        if (sort == 'add_time'):
+            queryset = Report.objects.filter(author=self.request.user).order_by('-add_time')
+        elif (sort == 'alpha_name'):
+            queryset = Report.objects.filter(author=self.request.user).order_by('alpha_name')
+        else:
+            queryset = Report.objects.filter(author=self.request.user)
         return queryset
     #search_fields = ('name')
