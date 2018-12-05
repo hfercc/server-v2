@@ -205,7 +205,7 @@ def copy_config_file_2configs(original_config_path, alpha_id, formula_flag):
 
     # set 'path' in Alpha
     alpha_node = root.find('Alpha')
-    if formula_flag == 'false':
+    if formula_flag == False:
         alpha_node.set('path', '/home/data/alpha/lib/alpha_{0}.so'.format(alpha_id))
     else:
         alpha_node.set('path', 'alpha_formulaic_filterout_zombie.so')
