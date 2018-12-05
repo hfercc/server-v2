@@ -7,6 +7,12 @@ def get(file, report):
     p = list(elementobj.getElementsByTagName("DataLoader"))
     if report.alpha_type == 0:
       r[0].attributes['path'].value = './alpha/' + report.alpha_name + '.so'
+    if report.type_code > 0:
+      op = xmldom.Document().createElement('Operation')
+      op.setAttribute('id','Truncate')
+      op.setAttribute('lower_limit', "0")
+      op.setAttribute('path', "alphaop_truncate.so")
+      r[0].appendChild(op)
     return r, p
 
 def generate(r, p, report):
