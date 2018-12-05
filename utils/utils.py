@@ -70,7 +70,10 @@ def unzip(report):
             os.remove(os.path.join(path_to,'config.xml'))
             print('Removed original config.xml')
             os.rename(xml_file, os.path.join(path_to,'config.xml'))
-        print('Updated new config.xml')
+            print('Updated new config.xml')
+        else:
+            os.rename(xml_file, os.path.join(path_to,'config.xml'))
+            print('Updated new config.xml')
         if os.path.exists(os.path.join(path_to, report.alpha_name + '.py')):
             os.remove(os.path.join(path_to, report.alpha_name + '.py'))
             print('Removed original source file')
