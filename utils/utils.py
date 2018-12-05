@@ -59,7 +59,6 @@ def unzip(report):
         f = zipfile.ZipFile(full_path, 'r')
         path_to = get_dir(full_path)
         for file in f.namelist():
-            print(file)
             if (file == 'alpha.py') or ('.xml' in file):
                 if os.path.exists(os.path.join(path_to, file)):
                     print('Removed {}'.format(file))
@@ -67,11 +66,11 @@ def unzip(report):
                 print('Overwrite {}'.format(file))
                 f.extract(file, path_to)
         xml_file = glob(os.path.join(path_to, '*.xml'))[0]
-        if os.path.exists(os.path.join(path_to,'config.xml')):
+        if os.path.exists(os.path.join(path_to,'config.xml')) and xml_file.split('/')[-1] != 'config.xml':
             os.remove(os.path.join(path_to,'config.xml'))
             print('Removed original config.xml')
-        os.rename(xml_file, os.path.join(path_to,'config.xml'))
-        print('Renamed new config.xml')
+            os.rename(xml_file, os.path.join(path_to,'config.xml'))
+        print('Updated new config.xml')
         if os.path.exists(os.path.join(path_to, report.alpha_name + '.py')):
             os.remove(os.path.join(path_to, report.alpha_name + '.py'))
             print('Removed original source file')
