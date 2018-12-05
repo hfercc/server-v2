@@ -61,19 +61,22 @@ def unzip(report):
         for file in f.namelist():
             print(file)
             if (file == 'alpha.py') or ('.xml' in file):
-
                 if os.path.exists(os.path.join(path_to, file)):
-                    print('overwrite')
+                    print('Removed {}'.format(file))
                     os.remove(os.path.join(path_to, file))
+                print('Overwrite {}'.format(file))
                 f.extract(file, path_to)
         xml_file = glob(os.path.join(path_to, '*.xml'))[0]
-        print(xml_file)
         if os.path.exists(os.path.join(path_to,'config.xml')):
             os.remove(os.path.join(path_to,'config.xml'))
+            print('Removed original config.xml')
         os.rename(xml_file, os.path.join(path_to,'config.xml'))
+        print('Renamed new config.xml')
         if os.path.exists(os.path.join(path_to, report.alpha_name + '.py')):
             os.remove(os.path.join(path_to, report.alpha_name + '.py'))
+            print('Removed original source file')
         os.rename(os.path.join(path_to, 'alpha.py'), os.path.join(path_to, report.alpha_name + '.py'))
+        print('Renamed new source file')
         f.close()
     except:
         pass
@@ -83,14 +86,17 @@ def validate_files(report):
     if report.alpha_type==0:
         for file in [report.alpha_name + '.py','config.xml']:
             if not os.path.exists(os.path.join(folder, file)):
+                print('Error: {} not existed'.format(file))
                 return False
+            print('Validated {}'.format(file))
         return True
     else:
         for file in ['config.xml']:
             if not os.path.exists(os.path.join(folder, file)):
+                print('Error: {} not existed'.format(file))
                 return False
+            print('Validated {}'.format(file))
         return True
-
 def compile_alpha(report):
     '''
     from .setup import _compile_alpha
@@ -118,20 +124,23 @@ def compile_alpha(report):
     env=os.environ.copy()
     env['PYTHONPATH']='/home/data/Simulator/MXSimulator-Research/lib/core:/home/data/Simulator/MXSimulator-Research/lib/loader:/home/alpha-service/server-v2/pysimulator/alpha' 
     prepare(report)
+    print('Begin to compile source file')
     os.chdir(os.path.join(base_dir, 'pysimulator'))
     if report.alpha_type == 0:
         pipe = subprocess.Popen('./compile.sh {}'.format(report.alpha_name + '.py') , shell=True, env=env)
         pipe.communicate()
     with open('config_compile.xml', 'w') as f:
+        print('Generating comfig_compile.xml')
         r, p = get('config.xml', report)
         x = generate(r, p, report)
         print(x)
         f.write(x)
+    print('Generated comfig_compile.xml')
     pipe = subprocess.Popen('python run.py -c config_compile.xml' , shell=True, env=env)
     pipe.communicate()
     if os.path.exists('output'):
+        print('Backtest succeeded.')
         fileset =  FileRecord.objects.filter(Q(author=report.author) & Q(report=report))
-        print(len(fileset))
         if (len(fileset) == 0):
             FileRecord.objects.create(content=open(os.path.join('output','output_pnl.png'), 'rb').read(), author=report.author, report=report, name='output_pnl.png')
             FileRecord.objects.create(content=open(os.path.join('output','output_ret.csv'), 'rb').read(), author=report.author, report=report, name='output_ret.csv')
@@ -190,6 +199,10 @@ def compile_alpha(report):
         else:
             return True, 0
     else:
+        print('Backtest failed. Cleaning files')
+        os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
+        if report.alpha_type == 0:
+            os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py'))
         return False, 0
 
 
