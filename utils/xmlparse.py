@@ -7,7 +7,7 @@ def get(file, report):
     p = list(elementobj.getElementsByTagName("DataLoader"))
     if report.alpha_type == 0:
       r[0].attributes['path'].value = './alpha/' + report.alpha_name + '.so'
-      r[0].attributes['id'].value = report.alpha_name
+    r[0].attributes['id'].value = report.alpha_name
     if report.type_code > 0:
       op = xmldom.Document().createElement('Operation')
       op.setAttribute('id','Truncate')
