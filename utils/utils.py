@@ -30,7 +30,13 @@ def get_path(report):
 def prepare(report):
     full_path = get_path(report)
     if report.alpha_type == 0:
+        if os.path.exists(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py')):
+            print('Found source file in pysimulator. Removing it.')
+            os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py'))
         shutil.move(get_dir(get_path(report), file_name = report.alpha_name + '.py'), os.path.join(base_dir, 'pysimulator'))
+    if os.path.exists(os.path.join(base_dir, 'pysimulator', 'config.xml')):
+        print('Found config.xml in pysimulator. Removing it.')
+        os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
     shutil.move(get_dir(get_path(report), file_name = 'config.xml'), os.path.join(base_dir, 'pysimulator'))
 
 def get_dir(path , file_name = None):
@@ -193,6 +199,7 @@ def compile_alpha(report):
         os.remove(os.path.join(base_dir, 'pysimulator', 'config.xml'))
         if report.alpha_type == 0:
             os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.py'))
+            os.remove(os.path.join(base_dir, 'pysimulator', report.alpha_name + '.pyc'))
             shutil.rmtree('build')
             os.remove('alpha/{}.so'.format(report.alpha_name))
         shutil.rmtree('output')
