@@ -50,7 +50,7 @@ def check_correlation(ret, corr_limit, sim_type, universe, my_id):
         corr = pearsonr(ret[:min_len], ret_ary[:min_len])[0]
         if corr > max_corr:
             max_corr = corr
-            max_corr_id = '.'.join(ret_f.split('/')[-1].split('.')[:-1])
+            max_corr_id = '.'.join(ret_f.split('/')[-1].split('.')[:-2])
     print(max_corr_id, my_id)
     if max_corr > corr_limit and max_corr_id != my_id:
         print '[FAILURE][alpha_id:{0},corr:{1}]'.format(max_corr_id, max_corr)
