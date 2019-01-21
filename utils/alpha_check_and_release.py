@@ -55,8 +55,9 @@ def check_correlation(ret, corr_limit, sim_type, universe, my_id):
     if max_corr > corr_limit and max_corr_id != my_id:
         print '[FAILURE][alpha_id:{0},corr:{1}]'.format(max_corr_id, max_corr)
         err = '[FAILURE][alpha_id:{0},corr:{1}]'.format(max_corr_id, max_corr)
-
-    return max_corr <= corr_limit, err
+        return False, err
+    else:
+        return True, ''
 
 ## check whether sharpe ratio satisfy given criterion
 # @param year_sharpe sharpe of each year
