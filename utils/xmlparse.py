@@ -33,3 +33,14 @@ def generate(r, p, report):
     p3 = ' '.join([a.toxml() for a in r])
     p4 = ' '.join([b.toxml() for b in p])
     return p1 + p4 + p3 + p2
+
+if __name__ == '__main__':
+  class Report:
+    def __init__(self):
+      self.alpha_name = "alpha_cdx128.1_longshort_ALL"
+      self.universe = 0
+      self.type_code = 0
+      self.alpha_type = 0
+  report = Report()
+  r,p = get("sample.xml", report)
+  print(generate(r, p, report))

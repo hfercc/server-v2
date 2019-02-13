@@ -127,6 +127,8 @@ def compile_alpha(report):
     else:
         return False
     '''
+    print("Alpha name: {}".format(report.alpha_name))
+    print("Alpha type: {}".format(report.alpha_type))
     universe_ = ['ALL', 'zz500', 'hs300']
     type_     = ['longshort', 'longonly', 'IC_hedge', 'IF_hedge']
     env=os.environ.copy()
@@ -138,12 +140,12 @@ def compile_alpha(report):
         pipe = subprocess.Popen('./compile.sh {}'.format(report.alpha_name + '.py') , shell=True, env=env)
         pipe.communicate()
     with open('config_compile.xml', 'w') as f:
-        print('Generating comfig_compile.xml')
+        print('Generating config_compile.xml')
         r, p = get('config.xml', report)
         x = generate(r, p, report)
         print(x)
         f.write(x)
-    print('Generated comfig_compile.xml')
+    print('Generated config_compile.xml')
     pipe = subprocess.Popen('python run.py -c config_compile.xml' , shell=True, env=env)
     pipe.communicate()
     if os.path.exists('output'):
