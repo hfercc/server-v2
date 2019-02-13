@@ -162,7 +162,7 @@ def compile_alpha(report):
                 else:
                     f.content = open(os.path.join('output','output_performance.csv'), 'rb').read()
                 f.save(update_fields=['content'])
-        (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary) = read_from_path('output/output_performance.csv', 'output/output_ret.csv')
+        (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary, startdate) = read_from_path('output/output_performance.csv', 'output/output_ret.csv')
         print '[INFO]check alpha_id uniqueness...'
         if False:
             print '[INFO]check alpha_id uniqueness: Failed'
@@ -178,7 +178,11 @@ def compile_alpha(report):
                 print '[INFO]insert into DB...'
                 insert2db(report.alpha_name, type_[report.type_code], universe_[report.universe], report.author.username, yearly_tvr, yearly_ret, yearly_sharpe)
                 print '[INFO]insert into DB: OK'
-
+                
+                print '[INFO]insert return into MongoDB...'
+                update_correlation(report.alpha_name, type_[report.type_code], universe_[report.universe], daily_ret_ary, startdate)
+                print '[INFO]insert return into MongoDB: OK'
+                
                 # copy .so file to /opt/data/alpha/lib
                 if report.alpha_type == 0:
                     print '[INFO]copy .so to /home/data/alpha/lib...'

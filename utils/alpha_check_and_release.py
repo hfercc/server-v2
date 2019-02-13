@@ -4,6 +4,7 @@
 import numpy as np
 import os
 import pymysql
+import pymongo
 from scipy.stats.stats import pearsonr
 from optparse import OptionParser
 from xml.etree.ElementTree import ElementTree,Element
@@ -11,6 +12,8 @@ import xml.etree.ElementTree as ET
 import datetime
 import sys
 import glob
+import json
+from prettytable import PrettyTable
 
 ## check whether the given alpha_id exists in alpha_details table
 #  @param alpha_id 
@@ -31,6 +34,71 @@ def  check_unique_alphaid(alpha_id):
 
     conn.close()
     return res
+
+def save_to_mongodb(alphaId,type,universe,retList, startdate):
+    client = pymongo.MongoClient('mongodb://root:mxtz-admin-2017@192.168.0.166:27017/')
+    
+    db = client['AlphaFactorRet']
+    
+    collection = None    
+    tableName="AlphaFactorRet"    
+    coll_list = db.list_collection_names()
+    if tableName in coll_list:
+        collection = db[tableName]
+    else:
+        collection = db.create_collection(tableName,storageEngine={'wiredTiger':{'configString':'block_compressor=snappy'}})
+        collection.create_index([('alphaId',pymongo.ASCENDING),('type',pymongo.ASCENDING),('universe',pymongo.ASCENDING)],unique=True)
+        
+    obj=collection.find_one({'alphaId':alphaId})
+    if obj==None:
+        msg = dict()   
+        msg['alphaId'] = alphaId
+        msg['type'] = type
+        msg['universe'] = universe
+        msg['startdate'] = startdate
+        msg['ret'] = json.dumps(retList)
+        msg['update_time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        collection.insert_one(msg)
+    else:
+        collection.update({"alphaId":alphaId},{"$set":{'type':type,'universe':universe, 'startdate':startdate, "ret":json.dumps(retList), 'update_time':datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}})
+
+def update_correlation(alpha_id, s_type, universe, ret, startdate):
+    save_to_mongodb(alpha_id, s_type, universe, ret.tolist(), startdate)
+
+def check_correlation_fromdb(ret, corr_limit, sim_type, universe, my_id):
+    client = pymongo.MongoClient('mongodb://root:mxtz-admin-2017@192.168.0.166:27017/')
+    db=client['AlphaFactorRet']
+    collection = db['AlphaFactorRet']
+    cur = collection.find({'type':sim_type,'universe':universe})
+    
+    max_corr = -1
+    max_corr_id = ''
+    corr_list = []
+    for r in cur:
+        cand_ret = np.array(json.loads(r['ret']))
+        min_len = min(len(ret), len(cand_ret))
+        corr = pearsonr(ret[:min_len], cand_ret[:min_len])[0]
+        corr_list.append((r['alphaId'], corr))
+
+        if corr > max_corr:
+            max_corr = corr
+            max_corr_id = r['alphaId']
+
+    print '[INFO]Top correlated alphas:'
+    headers = ['alpha_id','correlation']
+    t = PrettyTable(headers)
+    corr_list.sort(key=lambda x:x[1], reverse=True)
+    for i in range(min(10, len(corr_list))):
+        t.add_row(corr_list[i])      
+
+    print t
+
+    if max_corr > corr_limit and max_corr_id != my_id:
+        print '[FAILURE][alpha_id:{0},corr:{1}]'.format(max_corr_id, max_corr)
+        err = '[FAILURE][alpha_id:{0},corr:{1}]'.format(max_corr_id, max_corr)
+        return False, err
+    else:
+        return True, ''
 
 ## check the highest correlation the given alpha return with alphas in database
 # @param ret numpy array
@@ -105,6 +173,7 @@ def read_from_path(performance_path, return_path):
     daily_ret_list = []
     ## read daily return file
     daily_ret_f = open(return_path)
+    startdate = -1
     i = 0
     for line in daily_ret_f:
         i += 1
@@ -114,6 +183,8 @@ def read_from_path(performance_path, return_path):
         tokens = line.split(',')
         if len(tokens) < 2:
             continue
+        if startdate < 0:
+            startdate = int(tokens[0])
         daily_ret_list.append(float(tokens[1]))
 
     yearly_tvr = np.array(tvr_list[:-1])
@@ -126,10 +197,10 @@ def read_from_path(performance_path, return_path):
 
     daily_ret_ary = np.array(daily_ret_list)
 
-    return (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary)
+    return (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary, startdate)
 
 def check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, sim_type, universe, my_id):
-    corr_flag, err_corr = check_correlation(daily_ret_ary, 0.7, sim_type, universe, my_id)
+    corr_flag, err_corr = check_correlation_fromdb(daily_ret_ary, 0.7, sim_type, universe, my_id)
     sharpe_flag = check_sharpe_ratio(yearly_sharpe, overall_sharpe, 0, 1.5)
     turnover_flag = check_turnover_return(overall_tvr, overall_ret, 0.0016)
     err = ''
@@ -246,7 +317,7 @@ if __name__ == '__main__':
         sys.exit(0)
     print '[INFO]check alpha_id uniqueness: OK'
 
-    (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary) = read_from_path(options.performance_file, options.daily_return_file)
+    (yearly_tvr, yearly_ret, yearly_sharpe, overall_tvr, overall_ret, overall_sharpe, daily_ret_ary, startdate) = read_from_path(options.performance_file, options.daily_return_file)
     # if the performance satisfy given criterion, insert this alpha into database
     print '[INFO]check criterion...'
     if check_criterion(daily_ret_ary, yearly_sharpe, overall_sharpe, overall_tvr, overall_ret, options.type, options.universe):
@@ -256,6 +327,8 @@ if __name__ == '__main__':
         print '[INFO]insert into DB...'
         insert2db(options.alpha_id, options.type, options.universe, options.author, yearly_tvr, yearly_ret, yearly_sharpe)
         print '[INFO]insert into DB: OK'
+
+        print '[INFO]insert return into MongoDB...'
 
         # copy .so file to /home/data/alpha/lib
         if options.formula != "true":
@@ -270,4 +343,4 @@ if __name__ == '__main__':
         # copy config file to /home/data/alpha/configs
         print '[INFO]copy config to /home/alpha-service/production_configs...'
         copy_config_file_2configs(options.config_path, options.alpha_id, options.formula)
-        print '[INFO]copy config to /home/alpha-service/production_configs: OK'
+        print '[INFO]copy config to /home/alpha-service/production_configs: OK'        
