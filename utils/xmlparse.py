@@ -17,7 +17,7 @@ def get(file, report):
     return r, p
 
 def generate(r, p, report):
-    universe_ = ['ALL', 'zz500', 'hs300']
+    universe_ = ['ALL', 'zz500', 'hs300', 'zz500T']
     type_     = ['longshort', 'longonly', 'IC', 'IF']
     p1 = '<Config><SimulationSetting startdate="20090101" enddate="20180930" backdays="20" enable_performance="true" timeit="true"/> \
   <Date id="dates" path="dates_loader.so" datapath="/home/data/research_cache/JYData"/> \

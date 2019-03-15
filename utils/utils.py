@@ -129,7 +129,7 @@ def compile_alpha(report):
     '''
     print("Alpha name: {}".format(report.alpha_name))
     print("Alpha type: {}".format(report.alpha_type))
-    universe_ = ['ALL', 'zz500', 'hs300']
+    universe_ = ['ALL', 'zz500', 'hs300', 'zz500T']
     type_     = ['longshort', 'longonly', 'IC_hedge', 'IF_hedge']
     env=os.environ.copy()
     env['PYTHONPATH']='/home/data/Simulator/MXSimulator-Research/lib/core:/home/data/Simulator/MXSimulator-Research/lib/loader:/home/alpha-service/server-v2/pysimulator/alpha' 
